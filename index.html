@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RD Doku</title>
+<meta name="description" content="Klick-Baukasten für den Freitext der Einsatzdokumentation im Rettungsdienst.">
+<meta name="theme-color" content="#0A5DA6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="RD Doku">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font-size:14px}
+img{max-width:100%}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+</style>
+</head>
+<body>
+<style>
+/* Layout: links chronologische Abschnitte mit Klick-Bausteinen, rechts mitlaufender Freitext (Handy: Text unten + feste Kopierleiste) */
+:root{
+  --bg:#EEF2F5; --surface:#FFFFFF; --ink:#15202B; --muted:#5A6876; --line:#D6DEE5;
+  --accent:#0A5DA6; --accent-ink:#FFFFFF; --accent-soft:#E2EEF9; --note:#FFF5DB; --note-ink:#6B4E00;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E141A; --surface:#16202A; --ink:#E4EBF1; --muted:#93A2B0; --line:#25323F;
+  --accent:#5DA8EE; --accent-ink:#071421; --accent-soft:#183049; --note:#2E2715; --note-ink:#E9CF85; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E141A; --surface:#16202A; --ink:#E4EBF1; --muted:#93A2B0; --line:#25323F;
+  --accent:#5DA8EE; --accent-ink:#071421; --accent-soft:#183049; --note:#2E2715; --note-ink:#E9CF85; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 96px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:24px;align-items:start}
+header{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px;align-items:end;justify-content:space-between}
+h1{font-size:1.45rem;margin:0;font-weight:600;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:2px 0 0;font-size:.9rem}
+.note{grid-column:1/-1;background:var(--note);color:var(--note-ink);border-radius:8px;padding:10px 14px;font-size:.88rem;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.sections{display:flex;flex-direction:column;gap:14px;min-width:0}
+section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+section h2{margin:0 0 12px;font-size:1rem;font-weight:600;display:flex;gap:10px;align-items:baseline}
+section h2 .n{font-family:var(--mono);font-size:.78rem;color:var(--accent);font-weight:500}
+.grp{display:grid;grid-template-columns:120px minmax(0,1fr);gap:8px 12px;padding-block:8px;border-top:1px dashed var(--line)}
+h2+.grp,.letter+.grp{border-top:0;padding-top:0}
+.letter{font-weight:600;font-size:.9rem;color:var(--accent);margin-top:14px;padding-top:12px;border-top:1px solid var(--line);margin-bottom:6px}
+h2+.letter{margin-top:0;padding-top:0;border-top:0}
+.lbl{font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:7px}
+.lbl small{display:block;text-transform:none;letter-spacing:0;font-size:.72rem;opacity:.8}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip:focus-visible,.btn:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;width:100%}
+input{font-family:var(--mono);font-variant-numeric:tabular-nums}
+textarea{min-height:70px;resize:vertical}
+input.txt{font-family:var(--sans)}
+.meds{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.medrow{display:flex;flex-wrap:wrap;gap:6px;width:100%;align-items:center}
+.medrow>input,.medsel{flex:1 1 170px;min-width:0}
+.dose{display:flex;gap:4px;flex:0 1 150px;min-width:0}
+.dose input{width:70px;flex:1 1 60px;min-width:0}
+.medu,.medr{flex:0 0 auto}
+select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;min-height:38px}
+select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+aside{position:sticky;top:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+aside h2{margin:0;font-size:1rem;font-weight:600;display:flex;justify-content:space-between;align-items:baseline}
+.count{font-family:var(--mono);font-size:.76rem;color:var(--muted);font-weight:400}
+#out{font-family:var(--mono);font-size:.86rem;line-height:1.55;white-space:pre-wrap;background:var(--bg);border-radius:8px;padding:12px;min-height:240px;max-height:62vh;overflow:auto;border:1px solid var(--line);overflow-wrap:anywhere}
+#out:empty::before{content:"Noch nichts ausgewählt. Tippe links auf die Bausteine.";color:var(--muted)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{font:inherit;font-weight:500;border-radius:8px;padding:9px 14px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);min-height:40px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);flex:1}
+.opt{display:flex;gap:6px;align-items:center;font-size:.86rem;color:var(--muted)}
+.opt input{width:auto}
+.toast{font-size:.84rem;color:var(--accent);min-height:1.2em}
+.handbtn{width:100%;padding:14px;font-size:1rem;border:1.5px dashed var(--accent);color:var(--accent);background:var(--surface)}
+.ov{position:fixed;inset:0;z-index:20;background:rgba(10,20,30,.55);display:flex;align-items:center;justify-content:center;
+  padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.ovcard{background:var(--surface);color:var(--ink);border-radius:12px;width:100%;max-width:720px;max-height:100%;overflow:auto;padding:18px 20px;border:1px solid var(--line)}
+.ovhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px}
+.ovhead h2{margin:0;font-size:1.15rem}
+.ovsub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+.sh{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 12px;padding:10px 0;border-top:1px solid var(--line)}
+.sh .k{font-family:var(--mono);font-size:1.6rem;font-weight:500;color:var(--accent);line-height:1}
+.sh h3{margin:0;font-size:.95rem}
+.sh .hint{color:var(--muted);font-size:.84rem;margin:2px 0 0}
+.sh .fill{font-family:var(--mono);font-size:.84rem;white-space:pre-wrap;background:var(--bg);border-radius:6px;padding:6px 8px;margin-top:6px;overflow-wrap:anywhere}
+.sh.crm h3::after{content:"CRM";font-size:.66rem;letter-spacing:.06em;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:0 4px;margin-left:8px;vertical-align:2px}
+.wip{background:var(--note);color:var(--note-ink);border-radius:8px;padding:10px 12px;font-size:.9rem;margin:0 0 8px}
+.crit{margin:6px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.bar{display:none}
+@media (max-width:860px){
+  .wrap{grid-template-columns:minmax(0,1fr)}
+  aside{position:static}
+  #out{max-height:none}
+  .bar{display:flex;position:fixed;left:0;right:0;bottom:0;gap:8px;background:var(--surface);border-top:1px solid var(--line);
+    padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:5}
+}
+@media (max-width:520px){.grp{grid-template-columns:minmax(0,1fr)}.lbl{padding-top:0}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>RD Freitext-Baukasten</h1>
+      <p class="sub">Einsatz chronologisch durchklicken, Text kopieren, ins Protokoll einfügen. <span style="opacity:.7">· Version 1.0</span></p>
+    </div>
+    <div class="row">
+      <button class="btn" id="reset" type="button">Neuer Einsatz</button>
+    </div>
+  </header>
+
+  <div class="note" id="exampleNote" hidden>
+    <span>Beispielfall (Brustschmerz) ist vorausgewählt, damit du siehst, wie der Text entsteht.</span>
+    <button class="btn" id="reset2" type="button">Leeren</button>
+  </div>
+
+  <div class="sections" id="sections"></div>
+
+  <aside>
+    <h2>Freitext <span class="count" id="count">0 Zeichen</span></h2>
+    <div id="out" aria-live="polite"></div>
+    <div class="row">
+      <label class="opt"><input type="checkbox" id="paras" checked> Absätze je Abschnitt</label>
+    </div>
+    <div class="row">
+      <button class="btn primary" id="copy" type="button">Text kopieren</button>
+    </div>
+    <div class="toast" id="toast"></div>
+  </aside>
+</div>
+
+<div class="ov" id="ov" hidden role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+  <div class="ovcard">
+    <div class="ovhead"><h2 id="ovTitle">Übergabe nach SINNHAFT</h2><button class="btn" id="ovClose" type="button">Schließen</button></div>
+    <p class="ovsub" id="ovSub"></p>
+    <div id="ovBody"></div>
+  </div>
+</div>
+
+<div class="bar">
+  <button class="btn primary" id="copy2" type="button">Text kopieren</button>
+  <button class="btn" id="jump" type="button">Ansehen</button>
+</div>
+
+<script>
+// ---------- Bausteine ----------
+// m: single | multi | text. show:{k,i:[…]} blendet bedingt ein. silent: nur über lead/cat verwendet.
+// Listen-Abschnitte (list): Gruppen tragen L (Buchstabe), Ausgabe untereinander "B: …".
+// cat: aufeinanderfolgende Gruppen gleicher cat werden zusammengefasst ("Puls kräftig, rhythmisch, normofrequent").
+// Medikamente mit SAA im Gemeinsamen Kompendium Rettungsdienst 2026
+const MEDINFO={"Acetylsalicylsäure":["mg","i.v.","p.o."],"Amiodaron":["mg","i.v.","i.o."],"Atropin":["mg","i.v.","i.o."],"Butylscopolamin":["mg","i.v."],"Dimenhydrinat":["mg","i.v.","rektal"],"Dimetinden":["mg","i.v."],"Epinephrin":["mg","i.v.","i.o.","i.m.","inhalativ"],"Esketamin":["mg","i.v.","nasal","i.m."],"Fentanyl":["µg","i.v.","nasal","i.m."],"Furosemid":["mg","i.v."],"Glucagon":["mg","i.m.","nasal"],"Glucose":["g","i.v."],"Glyceroltrinitrat":["mg","s.l."],"Heparin":["I.E.","i.v."],"Ibuprofen":["mg","p.o."],"Ipratropiumbromid":["mg","inhalativ"],"Lidocain":["mg","i.v.","i.o."],"Metoprolol":["mg","i.v."],"Midazolam":["mg","i.v.","nasal","i.m.","buccal"],"Morphin":["mg","i.v."],"Nalbuphin":["mg","i.v.","nasal","i.m.","s.c."],"Naloxon":["mg","i.v.","nasal","i.m."],"Ondansetron":["mg","i.v."],"Paracetamol":["mg","i.v.","rektal"],"Prednisolon":["mg","i.v.","rektal"],"Salbutamol":["mg","inhalativ"],"Tranexamsäure":["mg","i.v."],"Urapidil":["mg","i.v."],"Vollelektrolytlösung":["ml","i.v."]};
+const MEDS=Object.keys(MEDINFO);
+const UNITS=["mg","µg","g","I.E.","ml","Hub"];
+const ROUTES=["i.v.","i.o.","i.m.","s.c.","nasal","s.l.","buccal","p.o.","rektal","inhalativ"];
+const XABCDE={x:"x – Kritische Blutung",A:"A – Atemweg",B:"B – Atmung",C:"C – Kreislauf",D:"D – Neurologie",E:"E – Exposure"};
+const SAMPLER={S:"S – Symptome",A:"A – Allergien",M:"M – Medikamente",P:"P – Patientengeschichte",L:"L – Letzte Mahlzeit / Ausscheidung",E:"E – Ereignis",R:"R – Risikofaktoren"};
+const S = [
+ {t:"Einsatzort", g:[
+  {l:"Einsatzort", m:"single", o:[["Häuslich","Einsatzort ist die häusliche Umgebung des Pat."],["Pflegeheim","Einsatzort ist eine Pflegeeinrichtung."],["Öffentlich","Einsatzort ist der öffentliche Raum."],["Arztpraxis","Einsatzort ist eine Arztpraxis."],["Arbeitsplatz","Einsatzort ist der Arbeitsplatz des Pat."]]}
+ ]},
+ {t:"Auffindesituation", g:[
+  {l:"Position", m:"single", silent:true, o:[["Sitzend","sitzend"],["Liegend","liegend"],["Stehend","stehend"]]},
+  {l:"Wo", m:"single", silent:true, o:[["Im Bett","im Bett"],["Am Boden","am Boden"],["Auf Stuhl / Sessel","auf einem Stuhl"],["Im Fahrzeug","im Fahrzeug"]]},
+  {l:"Vor Ort", m:"multi", p:"Vor Ort anwesend: ", o:["Angehörige","Pflegepersonal","Ersthelfer","Hausarzt","Polizei","Feuerwehr"]}
+ ], lead:si=>{const a=[pick(si,0),pick(si,1)].filter(Boolean);return a.length?"Pat. wird "+a.join(" ")+" angetroffen.":""}},
+ {t:"Primary Assessment (xABC)", g:[
+  {l:"Ersteindruck", m:"single", silent:true, o:[["Nicht kritisch","nicht kritisch"],["Potentiell kritisch","potentiell kritisch"],["Kritisch","kritisch"]]},
+  {l:"Problem in", m:"multi", silent:true, show:{k:"2-0",i:[1,2]}, o:[["x – Blutung","x"],["A – Atemweg","A"],["B – Atmung","B"],["C – Kreislauf","C"]]},
+  {l:"Begründung", m:"text", show:{k:"2-0",i:[1,2]}, ph:"z. B. Tachypnoe, spritzende Blutung Oberschenkel"},
+  {l:"Traumaereignis?", m:"single", o:[["Ja → STU","Traumatisches Ereignis, daher schnelle Trauma-Untersuchung (STU)."],["Nein","Kein Hinweis auf ein Traumaereignis."]]}
+ ], lead:si=>{const s=pick(si,0); if(!s)return ""; const l=sel(si+"-1").map(i=>S[si].g[1].o[i][1]);
+   return "Primary Assessment (xABC): "+s+(visible(S[si].g[1].show)&&l.length?" ("+l.join(", ")+")":"")+"."}},
+ {t:"Schnelle Trauma-Untersuchung (STU)", show:{k:"2-3",i:[0]}, stu:true, g:[
+  {l:"Kopf / HWS", r:"Kopf/HWS", m:"multi", o:[["o. B.","ohne Befund",1],["Kopfverletzung","Verletzung am Kopf"],["HWS-Druckschmerz","Druckschmerz HWS"]]},
+  {l:"Thorax", r:"Thorax", m:"multi", o:[["Stabil, o. B.","ohne Befund",1],["Instabil","instabil"],["Prellmarke","Prellmarke"],["Druckschmerz","Druckschmerz"]]},
+  {l:"Abdomen", r:"Abdomen", m:"multi", o:[["Weich, o. B.","ohne Befund",1],["Abwehrspannung","Abwehrspannung"],["Prellmarke","Prellmarke"]]},
+  {l:"Becken", r:"Becken", m:"multi", o:[["Stabil, o. B.","ohne Befund",1],["Instabil","instabil"],["Druckschmerz","Druckschmerz"]]},
+  {l:"Extremitäten", r:"Extremitäten", m:"multi", o:[["o. B.","ohne Befund",1],["Fehlstellung","Fehlstellung"],["Offene Wunde","offene Wunde"],["DMS gestört","DMS gestört"]]},
+  {l:"Wirbelsäule", r:"Wirbelsäule", m:"multi", o:[["o. B.","ohne Befund",1],["Druckschmerz","Druckschmerz"],["Stufenbildung","Stufenbildung"]]}
+ ]},
+ {t:"Secondary Assessment (xABCDE)", list:{head:"Secondary Assessment (xABCDE)",L:XABCDE}, g:[
+  {L:"x", l:"Blutung", m:"single", o:[["Keine","keine kritische Blutung"],["Gestillt","kritische Blutung, gestillt"]]},
+  {L:"A", l:"Atemweg", m:"single", o:[["Frei","frei"],["Gefährdet","gefährdet"],["Verlegt","verlegt, Freimachen erforderlich"]]},
+  {L:"B", l:"Atmung", m:"single", o:[["Suffizient","suffizient, seitengleiche Thoraxexkursion"],["Dyspnoe","Dyspnoe, Tachypnoe"],["Insuffizient","insuffizient"]]},
+  {L:"B", l:"Auskultation", m:"multi", p:"Auskultation: ", o:[["Vesikulär bds.","vesikulär bds."],["Giemen","Giemen"],["Rasselgeräusche","feuchte RG"],["Abgeschwächt","abgeschwächt"]]},
+  {L:"C", l:"Haut", m:"single", o:[["Rosig, warm","Haut rosig, warm, trocken, Rekap < 2 s"],["Blass, kaltschweißig","Haut blass, kaltschweißig"],["Zentralisiert","Zentralisation, Rekap > 2 s"]]},
+  {L:"C", l:"Puls – Qualität", cat:"Puls", m:"single", o:["kräftig","schwach","fadenförmig"]},
+  {L:"C", l:"Puls – Rhythmus", cat:"Puls", m:"single", o:["rhythmisch","arrhythmisch"]},
+  {L:"C", l:"Puls – Frequenz", cat:"Puls", m:"single", o:["normofrequent","tachykard","bradykard"]},
+  {L:"C", l:"EKG", m:"single", fn:si=>{const v=sel(si+"-8")[0]; if(v==null)return ""; if(v===1)return "kein EKG abgeleitet";
+     const a=pick(si,9),b=sel(si+"-10").map(i=>S[si].g[10].o[i][1]); return "EKG"+(a?" ("+a+")":"")+(b.length?": "+b.join(", "):" abgeleitet")}, o:[["Ja","ja"],["Nein","nein"]]},
+  {L:"C", l:"Ableitung", m:"single", silent:true, show:{k:"4-8",i:[0]}, o:["4-Kanal","12-Kanal"]},
+  {L:"C", l:"EKG-Befund", m:"multi", silent:true, show:{k:"4-8",i:[0]}, o:["Sinusrhythmus","Sinustachykardie","Sinusbradykardie",["Abs. Arrhythmie","absolute Arrhythmie"],"AV-Block","Schenkelblock","ST-Hebungen","ST-Senkungen","Extrasystolen","Schrittmacherrhythmus","Breitkomplextachykardie"]},
+  {L:"D", l:"Bewusstsein", m:"single", o:[["Wach, orientiert","wach, zu allen Qualitäten orientiert"],["Desorientiert","wach, desorientiert"],["Somnolent","somnolent"],["Soporös","soporös"],["Komatös","komatös"]]},
+  {L:"D", l:"Pupillen", m:"single", fn:si=>{const v=sel(si+"-12")[0]; if(v==null)return ""; if(v===0)return "Pupillen isokor, lichtreagibel, konsensuell";
+     const b=sel(si+"-13").map(i=>S[si].g[13].o[i][1]); return "Pupillen: "+(b.length?b.join(", "):"Abweichung, s. Protokoll")}, o:[["Isokor, lichtreagibel, konsensuell","n"],["Abweichung","a"]]},
+  {L:"D", l:"Abweichung", m:"multi", silent:true, show:{k:"4-12",i:[1]}, o:["anisokor","entrundet",["Träge","träge lichtreagibel"],"lichtstarr","Miosis","Mydriasis",["Nicht konsensuell","nicht konsensuell"]]},
+  {L:"D", l:"Blutzucker", m:"single", o:[["Normoglykäm","normoglykäm"],["Hypoglykäm","hypoglykäm"],["Hyperglykäm","hyperglykäm"]]},
+  {L:"D", l:"BE-FAST", m:"single", fn:si=>{const v=sel(si+"-15")[0]; if(v==null)return ""; if(v===0)return "BE-FAST unauffällig";
+     const b=sel(si+"-16").map(i=>S[si].g[16].o[i][1]),t=(st.txt[si+"-17"]||"").trim(); return "BE-FAST positiv"+(b.length?": "+b.join(", "):"")+(t?"; Symptombeginn / Last Seen Well: "+t:"")}, o:[["Unauffällig","u"],["Auffällig","a"]]},
+  {L:"D", l:"Auffällig", m:"multi", silent:true, show:{k:"4-15",i:[1]}, o:[["B – Balance","Gleichgewichtsstörung"],["E – Eyes","Sehstörung"],["F – Face","Fazialisparese"],["A – Arms","Armschwäche"],["S – Speech","Sprachstörung"]]},
+  {L:"D", l:"T – Time", m:"text", silent:true, show:{k:"4-15",i:[1]}, ph:"Symptombeginn / Last Seen Well, z. B. 09:40 Uhr"},
+  {L:"E", l:"Befund", m:"single", o:[["Keine Verletzungen","keine äußeren Verletzungen"],["Prellmarke","Prellmarke, s. Verletzungsmuster"],["Wunde","offene Wunde, versorgt"]]},
+  {L:"E", l:"Temperatur", m:"single", o:[["Normotherm","normotherm"],["Hypertherm","hypertherm"],["Hypotherm","hypotherm"]]},
+  {L:"E", l:"Schmerz (NRS)", m:"single", p:"Schmerz NRS ", s:"/10", o:["0","1","2","3","4","5","6","7","8","9","10"]}
+ ]},
+ {t:"Anamnese (SAMPLER)", list:{head:"Anamnese (SAMPLER)",L:SAMPLER}, g:[
+  {L:"S", l:"Symptome", m:"multi", o:["Brustschmerzen","Atemnot","Übelkeit","Schwindel","Bauchschmerzen","Kopfschmerzen","allgemeine Schwäche","Schmerzen nach Sturz"]},
+  {L:"A", l:"Allergien", m:"single", o:[["Keine bekannt","keine bekannt"],["S. Anhang","s. Anhang"],["Unbekannt","unbekannt"]]},
+  {L:"M", l:"Medikamente", m:"single", o:[["S. Plan","s. Medikamentenplan"],["S. Anhang","s. Anhang"],["Keine","keine Dauermedikation"],["Unbekannt","unbekannt"]]},
+  {L:"P", l:"Vorerkrankungen", m:"multi", o:["KHK","arterielle Hypertonie","Diabetes mellitus","COPD","Vorhofflimmern","Z. n. Apoplex","Demenz",["S. Anhang","s. Anhang"],["Keine bekannt","keine bekannt"],["Unbekannt","unbekannt"]]},
+  {L:"L", l:"Letzte Mahlzeit / Ausscheidung", m:"single", o:[["Unauffällig","unauffällig"],["Nicht erfragbar","nicht erfragbar"]]},
+  {L:"E", l:"Beginn", m:"single", o:[["Plötzlich","plötzlicher Beginn"],["Seit Stunden","seit einigen Stunden"],["Seit Tagen","seit mehreren Tagen"],["Zunehmend","langsam zunehmend"]]},
+  {L:"E", l:"Hergang", m:"text", ph:"z. B. beim Treppensteigen aufgetreten"},
+  {L:"R", l:"Risikofaktoren", m:"multi", o:["Nikotinabusus","Adipositas","Immobilität","Alkoholabusus",["Keine bekannt","keine bekannt"]]}
+ ]},
+ {t:"Maßnahmen & Verlauf", list:{head:"Maßnahmen",L:{x:"x – Blutstillung",A:"A – Atemwegssicherung",B:"B – Atmung / Beatmung",C:"C – Kreislauf",D:"D – Neurologie",E:"E – Exposure / Erhalt",V:"Verlauf"},out:{V:"Verlauf"}}, g:[
+  {L:"x", l:"Blutstillung?", m:"single", fn:si=>{if(sel(si+"-0")[0]!==0)return ""; const m=sel(si+"-1").map(i=>S[si].g[1].o[i][1]); return "Blutstillung"+(m.length?" mittels "+list(m):"")}, o:[["Ja","ja"],["Nein","nein"]]},
+  {L:"x", l:"Womit", m:"multi", silent:true, show:{k:"6-0",i:[0]}, o:[["Druckverband","Druckverband"],["Tourniquet","Tourniquet"],["Hämostyptikum","Hämostyptikum"],["Manuelle Kompression","manueller Kompression"]]},
+  {L:"A", l:"Maßnahme", m:"multi", o:["Esmarch-Handgriff","Absaugen","Guedel-Tubus","Wendl-Tubus","Larynxtubus",["Intubation (NA)","Intubation durch NA"]]},
+  {L:"B", l:"Maßnahme", m:"multi", fn:si=>{const t=(st.txt[si+"-4"]||"").trim(); return sel(si+"-3").map(i=>i===2&&t?"Inhalation mit "+t:S[si].g[3].o[i][1]).join(", ")}, o:["O₂-Gabe","NIV-Therapie","Inhalation",["Assistierte Beatmung","assistierte Beatmung"],["Kontrollierte Beatmung","kontrollierte Beatmung"]]},
+  {L:"B", l:"Inhalation mit", m:"text", silent:true, show:{k:"6-3",i:[2]}, ph:"z. B. Salbutamol 2,5 mg"},
+  {L:"C", l:"Zugang", m:"single", fn:si=>{const z=sel(si+"-5")[0]; if(z===1){const g=pick(si,6);return "i.v.-Zugang"+(g?" ("+g+")":"")} if(z===2)return "i.o.-Zugang"; return ""}, o:[["Kein","kein"],["i.v.","iv"],["i.o.","io"]]},
+  {L:"C", l:"Größe", m:"single", silent:true, show:{k:"6-5",i:[1]}, o:["G22","G20","G18","G16","G14"]},
+  {L:"C", l:"Infusion?", m:"single", show:{k:"6-5",i:[1,2]}, fn:si=>{if(sel(si+"-7")[0]!==0)return ""; const t=(st.txt[si+"-8"]||"").trim(); return "Infusion"+(t?": "+t:"")}, o:[["Ja","ja"],["Nein","nein"]]},
+  {L:"C", l:"Welche / Menge", m:"text", silent:true, show:{k:"6-7",i:[0]}, ph:"z. B. 500 ml VEL"},
+  {L:"C", l:"Medikament?", m:"single", silent:true, o:[["Ja","ja"],["Nein","nein"]]},
+  {L:"C", l:"Medikamente", m:"meds", show:{k:"6-9",i:[0]}, fn:()=>{const l=st.meds.filter(m=>(m.n||"").trim()).map(m=>[m.n.trim(),(m.d||"").trim()?m.d.trim()+" "+(m.u||""):"",m.r||""].filter(Boolean).join(" ")+(m.t?" (titriert)":"")); return l.length?"Medikamente: "+l.join(", "):""}},
+  {L:"E", l:"Maßnahme", m:"multi", fn:si=>{const w=sel(si+"-12").map(i=>S[si].g[12].o[i][1]); return sel(si+"-11").map(i=>i===1&&w.length?"Wundversorgung mittels "+list(w):S[si].g[11].o[i][1]).join(", ")}, o:["Wärmeerhalt","Wundversorgung","Vakuummatratze","Zervikalstütze","Schaufeltrage","Kühlung"]},
+  {L:"E", l:"Wundversorgung", m:"multi", silent:true, show:{k:"6-11",i:[1]}, o:[["Verband","Verband"],["Druckverband","Druckverband"],["Tourniquet","Tourniquet"],["Hämostyptikum","Hämostyptikum"]]},
+  {L:"V", l:"Verlauf", m:"single", o:[["Besserung","Besserung der Beschwerden unter den Maßnahmen"],["Unverändert","keine Veränderung des Zustandsbildes"],["Verschlechterung","Verschlechterung des Zustandsbildes"]]}
+ ]},
+ {t:"Transport", g:[
+  {l:"Transport erfolgt?", m:"single", silent:true, o:[["Ja","ja"],["Nein","nein"]]},
+  {l:"Art", m:"single", show:{k:"7-0",i:[0]}, fn:si=>{const v=sel(si+"-1")[0]; if(v===0)return "Transport sitzend.";
+     if(v===1){const l=pick(si,2);return "Transport liegend"+(l?" in "+l:"")+"."} return ""}, o:[["Sitzend","s"],["Liegend","l"]]},
+  {l:"Lagerung", m:"single", silent:true, show:{k:"7-1",i:[1]}, o:[["Flach","Flachlagerung"],["Oberkörperhoch","Oberkörperhochlagerung"],["Stufenbett","Stufenbettlagerung"],["Schocklage","Schocklagerung"],["Fritsch","Fritsch-Lagerung"],["Stabile Seitenlage","stabiler Seitenlage"]]},
+  {l:"Begleitung", m:"single", show:{k:"7-0",i:[0]}, o:[["Ohne NA","Transport ohne NA-Begleitung."],["Mit NA","Transport in NA-Begleitung, weiteres s. Notarztprotokoll."]]},
+  {l:"Fachabteilung", m:"single", silent:true, show:{k:"7-0",i:[0]}, o:[["Internistisch","Innere Medizin"],["Chirurgisch","Chirurgie / Unfallchirurgie"],["Neurologisch","Neurologie"],["HNO","HNO"],["Urologie","Urologie"],["Gynäkologie","Gynäkologie"],["Kreißsaal","Kreißsaal"],["Kinderklinik","Kinderklinik"]]},
+  {l:"Zielklinik", m:"single", show:{k:"7-0",i:[0]}, fn:si=>{const p=[pick(si,4),pick(si,5)].filter(Boolean); return p.length?"Zielklinik: "+p.join(", ")+".":""}, o:[["ZNA","Zentrale Notaufnahme"],["CPU","Chest Pain Unit"],["Stroke Unit","Stroke Unit"],["Schockraum","Schockraum"]]},
+  {l:"Transportverlauf", m:"single", show:{k:"7-0",i:[0]}, o:[["Komplikationslos","Der Transport verlief komplikationslos."],["Mit Komplikationen","Im Transportverlauf traten Komplikationen auf, s. Ergänzung."]]},
+  {l:"Stattdessen", m:"single", show:{k:"7-0",i:[1]}, o:[
+    ["Ambulante Untersuchung / Behandlung","Ambulante Untersuchung und Behandlung vor Ort, kein Transport erforderlich. Pat. wurde aufgeklärt, bei Bedarf den kassenärztlichen Notdienst (116 117) zu kontaktieren, den Hausarzt aufzusuchen oder sich selbstständig in einer Notaufnahme vorzustellen sowie bei akuter Zustandsverschlechterung erneut den Notruf 112 zu wählen."],
+    ["Transportverweigerung","Pat. lehnt den Transport nach ausführlicher Aufklärung über mögliche Folgen ab. Pat. wurde über Alternativen informiert: kassenärztlicher Notdienst (116 117), Hausarzt, selbstständige Vorstellung in einer Notaufnahme sowie bei akuter Zustandsverschlechterung erneuter Notruf 112."]]},
+  {l:"Unterschrift", m:"single", show:{k:"7-7",i:[1]}, o:[["Pat. unterschreibt","Die Transportverweigerung wurde vom Pat. unterschrieben."],["Pat. verweigert","Pat. verweigert die Unterschrift."],["Gesetzl. Vertreter","Die Transportverweigerung wurde vom gesetzlichen Vertreter unterschrieben."]]},
+  {l:"Aufklärung", m:"action", act:"refusal", btn:"Aufklärung: Kriterien laut Kompendium", show:{k:"7-7",i:[1]}}
+ ]},
+ {t:"Aufklärung & Einwilligung", end:true, g:[
+  {l:"BGB § 630e/d", m:"single", o:[["Erfolgte","Aufklärung und Einwilligung nach BGB § 630e und § 630d erfolgte."],["Mutmaßl. Wille","Pat. aufgrund einer Bewusstseinsstörung nicht einwilligungsfähig, Handeln im mutmaßlichen Patientenwillen nach BGB § 630d."],["Betreuer / Vollmacht","Aufklärung und Einwilligung nach BGB § 630e und § 630d erfolgte über den gesetzlichen Betreuer bzw. Bevollmächtigten."],["Ablehnung","Aufklärung nach BGB § 630e erfolgte, Pat. ist einwilligungsfähig und lehnt die Maßnahmen ab."]]}
+ ]}
+];
+S.forEach(s=>s.g.forEach(g=>{if(g.o)g.o=g.o.map(o=>Array.isArray(o)?o:[o,o])}));
+
+// ---------- Zustand ----------
+let st={sel:{},txt:{},meds:[],extra:"",paras:true};
+const EXAMPLE={sel:{"0-0":[0],"1-0":[0],"1-1":[2],"1-2":[0],"2-0":[0],"2-3":[1],
+ "4-0":[0],"4-1":[0],"4-2":[0],"4-3":[0],"4-4":[0],"4-5":[0],"4-6":[0],"4-7":[0],"4-8":[0],"4-9":[1],"4-10":[0],"4-11":[0],"4-12":[0],"4-14":[0],"4-15":[0],"4-18":[0],"4-19":[0],"4-20":[6],
+ "5-0":[0,2],"5-1":[0],"5-2":[0],"5-3":[0,1],"5-4":[0],"5-5":[0],
+ "6-3":[0],"6-5":[1],"6-6":[2],"6-7":[1],"6-9":[0],"6-13":[0],
+ "7-0":[0],"7-1":[1],"7-2":[1],"7-3":[0],"7-4":[0],"7-5":[1],"7-6":[0],"8-0":[0]},
+ txt:{},meds:[{n:"Acetylsalicylsäure",d:"250",u:"mg",r:"i.v.",t:false},{n:"Morphin",d:"3",u:"mg",r:"i.v.",t:true}],extra:"",paras:true};
+const KEY="rd-freitext-app-v1";
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return null}
+
+// ---------- Textlogik ----------
+const sel=k=>st.sel[k]||[];
+const visible=c=>{if(!c)return true;const [a,b]=c.k.split("-").map(Number);return gVis(a,b)&&sel(c.k).some(x=>c.i.includes(x))};
+function gVis(si,gi){return visible(S[si].g[gi].show)}
+function pick(si,gi){const i=sel(si+"-"+gi)[0];return i==null?"":S[si].g[gi].o[i][1]}
+function list(a){return a.length<2?a.join(""):a.slice(0,-1).join(", ")+" und "+a[a.length-1]}
+// frag=true: ohne Satzpunkt (für Listen)
+function groupText(si,gi,frag){
+  const g=S[si].g[gi],k=si+"-"+gi;
+  if(!visible(g.show))return "";
+  if(g.fn){let x=g.fn(si)||""; if(x&&!frag&&!/[.!?]$/.test(x))x+="."; return x}
+  if(g.m==="text"){const v=(st.txt[k]||"").trim();if(!v)return "";return frag?v.replace(/[.]$/,""):(/[.!?]$/.test(v)?v:v+".")}
+  const idx=sel(k); if(!idx.length)return "";
+  const parts=idx.map(i=>g.o[i][1]);
+  if(g.m==="multi")return (g.p||"")+(frag?parts.join(", "):list(parts))+(g.s??(frag?"":"."));
+  return (g.p||"")+parts[0]+(g.s||"");
+}
+function listLines(si){
+  const s=S[si],out=[];
+  Object.keys(s.list.L).forEach(L=>{
+    const fr=[]; let lastCat=null;
+    s.g.forEach((g,gi)=>{
+      if(g.L!==L||g.silent)return; const x=groupText(si,gi,true); if(!x)return;
+      if(g.cat){ if(lastCat===g.cat){fr[fr.length-1]+=", "+x} else {fr.push(g.cat+" "+x)} lastCat=g.cat }
+      else {fr.push(x); lastCat=null}
+    });
+    if(fr.length)out.push(((s.list.out||{})[L]||L)+": "+fr.join("; "));
+  });
+  return out;
+}
+function stuLines(si){
+  const s=S[si],pos=[],neg=[];
+  s.g.forEach((g,gi)=>{
+    const idx=sel(si+"-"+gi); if(!idx.length)return;
+    const f=idx.filter(i=>!g.o[i][2]).map(i=>g.o[i][1]);
+    if(f.length)pos.push(g.r+": "+f.join(", ")); else neg.push(g.r);
+  });
+  const out=[...pos]; if(neg.length)out.push(list(neg)+" ohne Befund");
+  return out;
+}
+function secText(si){
+  const s=S[si]; if(!visible(s.show))return "";
+  if(s.list||s.stu){
+    const lines=s.list?listLines(si):stuLines(si); if(!lines.length)return "";
+    const head=s.list?s.list.head:"STU";
+    return st.paras?head+":\n"+lines.join("\n"):head+": "+lines.join("; ")+".";
+  }
+  const t=[]; if(s.lead){const x=s.lead(si); if(x)t.push(x)}
+  s.g.forEach((g,gi)=>{if(g.silent)return; const x=groupText(si,gi); if(x)t.push(x)});
+  return t.join(" ");
+}
+function build(){
+  const main=[],tail=[];
+  S.forEach((s,si)=>{const x=secText(si); if(x)(s.end?tail:main).push(x)});
+  const all=main.concat(tail); if(st.extra.trim())all.push(st.extra.trim());
+  return all.join(st.paras?"\n\n":" ");
+}
+
+// ---------- UI ----------
+const root=document.getElementById("sections");
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+function render(){
+  root.innerHTML=""; let num=0;
+  const order=S.map((s,i)=>i).filter(i=>!S[i].end).concat(S.map((s,i)=>i).filter(i=>S[i].end),["extra"]);
+  order.forEach(si=>{
+    if(si!=="extra"&&!visible(S[si].show))return;
+    num++; const n=String(num).padStart(2,"0");
+    const sec=document.createElement("section");
+    if(si==="extra"){
+      sec.innerHTML=`<h2><span class="n">${n}</span>Ergänzung</h2><textarea id="extra" placeholder="Alles, was nicht in die Bausteine passt …"></textarea>`;
+      root.appendChild(sec); sec.querySelector("textarea").value=st.extra; return;
+    }
+    const s=S[si]; let lastL=null;
+    sec.innerHTML=`<h2><span class="n">${n}</span>${s.t}</h2>`;
+    s.g.forEach((g,gi)=>{
+      if(!visible(g.show))return;
+      if(s.list&&g.L!==lastL){const h=document.createElement("div");h.className="letter";h.textContent=s.list.L[g.L];sec.appendChild(h);lastL=g.L}
+      const key=si+"-"+gi,cur=sel(key),d=document.createElement("div");d.className="grp";
+      if(g.m==="action"){
+        d.innerHTML=`<div class="lbl">${g.l}<small>nicht im Freitext</small></div><div><button type="button" class="btn actbtn" data-act="${g.act}">${g.btn}</button></div>`;
+      }else if(g.m==="meds"){
+        if(!st.meds.length)st.meds.push({n:"",d:"",u:"mg",r:"i.v.",t:false});
+        const opt=(list,cur)=>list.map(v=>`<option${v===cur?" selected":""}>${v}</option>`).join("");
+        d.innerHTML=`<div class="lbl">${g.l}<small>Name · Dosis · Weg</small></div><div class="meds">${st.meds.map((m,i)=>{
+          const info=MEDINFO[m.n], routes=info&&!m.o?[...info.slice(1),...ROUTES.filter(r=>!info.includes(r))]:ROUTES;
+          return `<div class="medrow">
+          <select class="medsel" id="ms-${i}" data-med="${i}" aria-label="Medikament ${i+1}"><option value="">Medikament wählen …</option>${MEDS.map(n=>`<option${!m.o&&m.n===n?" selected":""}>${n}</option>`).join("")}<option value="__other"${m.o?" selected":""}>Anderes (eintippen)</option></select>
+          ${m.o?`<input class="txt" id="mn-${i}" data-med="${i}" data-f="n" placeholder="Medikament" value="${esc(m.n)}" aria-label="Anderes Medikament ${i+1}">`:""}
+          <span class="dose"><input class="num" id="md-${i}" data-med="${i}" data-f="d" inputmode="decimal" placeholder="Dosis" value="${esc(m.d||"")}" aria-label="Dosis ${i+1}"><select class="medu" id="mu-${i}" data-med="${i}" aria-label="Einheit ${i+1}">${opt(UNITS,m.u||"mg")}</select></span>
+          <select class="medr" id="mr-${i}" data-med="${i}" aria-label="Applikationsweg ${i+1}">${opt(routes,m.r||routes[0])}</select>
+          <button type="button" class="chip medt" data-med="${i}" aria-pressed="${!!m.t}">titriert</button><button type="button" class="chip medx" data-med="${i}" aria-label="Medikament entfernen">×</button></div>`}).join("")}<button type="button" class="chip medadd">+ Medikament</button></div>`;
+      }else if(g.m==="text"){
+        d.innerHTML=`<label class="lbl" for="t-${key}">${g.l}<small>Freitext</small></label><input class="txt" id="t-${key}" data-t="${key}" placeholder="${esc(g.ph||"")}" value="${esc(st.txt[key]||"")}">`;
+      }else{
+        d.innerHTML=`<div class="lbl">${g.l}<small>${g.m==="multi"?"mehrfach":"einfach"}</small></div><div class="chips">${g.o.map((o,i)=>`<button type="button" class="chip" data-k="${key}" data-i="${i}" aria-pressed="${cur.includes(i)}">${o[0]}</button>`).join("")}</div>`;
+      }
+      sec.appendChild(d);
+    });
+    root.appendChild(sec);
+  });
+  const hb=document.createElement("button");hb.type="button";hb.className="btn handbtn";hb.id="openHandover";hb.textContent="Übergabe vorbereiten (SINNHAFT)";
+  root.appendChild(hb);
+  document.getElementById("paras").checked=st.paras;
+  update();
+}
+function update(){
+  const t=build(); document.getElementById("out").textContent=t;
+  document.getElementById("count").textContent=t.length+" Zeichen"; save();
+}
+root.addEventListener("click",e=>{
+  const m=e.target.closest(".medt,.medx,.medadd");
+  if(m){const i=+m.dataset.med;
+    if(m.classList.contains("medt")){st.meds[i].t=!st.meds[i].t;m.setAttribute("aria-pressed",st.meds[i].t);update();return}
+    if(m.classList.contains("medx"))st.meds.splice(i,1); else st.meds.push({n:"",d:"",u:"mg",r:"i.v.",t:false});
+    render(); return}
+  const b=e.target.closest(".chip"); if(!b)return;
+  const k=b.dataset.k,i=+b.dataset.i,[si,gi]=k.split("-").map(Number),g=S[si].g[gi];
+  let cur=sel(k);
+  if(g.m==="multi"){
+    cur=cur.includes(i)?cur.filter(x=>x!==i):[...cur,i].sort((a,b)=>a-b);
+    // STU: "o. B." und Befunde schließen sich aus
+    if(S[si].stu&&cur.includes(i)) cur=g.o[i][2]?[i]:cur.filter(x=>!g.o[x][2]);
+  } else cur=cur.includes(i)?[]:[i];
+  st.sel[k]=cur;
+  document.getElementById("exampleNote").hidden=true;
+  const y=b.getBoundingClientRect().top; render();
+  const nb=root.querySelector(`.chip[data-k="${k}"][data-i="${i}"]`);
+  if(nb){window.scrollBy(0,nb.getBoundingClientRect().top-y);nb.focus({preventScroll:true})}
+});
+root.addEventListener("change",e=>{
+  const c=e.target.classList, i=e.target.dataset.med; if(i==null)return;
+  const m=st.meds[+i], v=e.target.value;
+  if(c.contains("medu")){m.u=v;update();return}
+  if(c.contains("medr")){m.r=v;update();return}
+  if(!c.contains("medsel"))return;
+  if(v==="__other"){m.o=true;m.n="";m.u="mg";m.r="i.v.";render();document.getElementById("mn-"+i)?.focus();return}
+  m.o=false; m.n=v; const info=MEDINFO[v]; if(info){m.u=info[0];m.r=info[1]}
+  render(); document.getElementById("md-"+i)?.focus();
+});
+root.addEventListener("input",e=>{
+  if(e.target.tagName==="SELECT")return;
+  if(e.target.dataset.med){st.meds[+e.target.dataset.med][e.target.dataset.f]=e.target.value}
+  else if(e.target.dataset.t)st.txt[e.target.dataset.t]=e.target.value;
+  else if(e.target.id==="extra")st.extra=e.target.value;
+  update();
+});
+function lineOf(si,L){const l=S[si].list?listLines(si).find(x=>x.startsWith(((S[si].list.out||{})[L]||L)+": ")):null;return l?l.slice(l.indexOf(": ")+2):""}
+function handover(){
+  const SY=lineOf(5,"S"),EV=lineOf(5,"E"),AL=lineOf(5,"A"),ME=lineOf(5,"M"),PG=lineOf(5,"P");
+  const auff=S[1].lead(1), prim=S[2].lead(2);
+  const sec=visible(S[4].show)?listLines(4).join("\n"):"", stu=visible(S[3].show)?stuLines(3).join("\n"):"";
+  const mass=listLines(6).filter(x=>!x.startsWith("Verlauf")).join("\n");
+  const rows=[
+   ["S","Start",1,"„Start“ durch aufnehmende Person. Ruhe, Face-to-Face, möglichst keine Tätigkeiten am Pat.",""],
+   ["I","Identifikation",0,"Geschlecht, Nachname, Alter (nicht Geburtsdatum). Fehlendes benennen, z. B. „Alter unbekannt“.",""],
+   ["N","Notfallereignis",0,"Was? (Leitsymptom / Verdachtsdiagnose) · Wie? (Ursache) · Wann? · optional Wo / Auffindesituation",[SY&&"Was: "+SY,EV&&"Wann / Wie: "+EV,auff].filter(Boolean).join("\n")],
+   ["N","Notfallpriorität",0,"ABCDE-Probleme nennen, wenn Maßnahmen nötig waren oder sind, mit pathologischen Befunden und Vitalwerten. Sonst: „kein A- bis D-Problem, unauffällige Vitalparameter“. Begleitverletzungen unter E.",[prim,stu&&"STU:\n"+stu,sec].filter(Boolean).join("\n")],
+   ["H","Handlung",0,"Direkt an die jeweilige Priorität koppeln: Maßnahme, Dosis / Umfang, Zeitpunkt, Wirkung. Bewusst unterlassene Maßnahmen nennen.",mass],
+   ["A","Anamnese",0,"Allergien, Medikation, Vorerkrankungen, Infektion, Soziales / Organisatorisches, Besonderheiten (z. B. Patientenverfügung, DNR/DNI). Leere Anamnese trotzdem erwähnen.",[AL&&"Allergien: "+AL,ME&&"Medikation: "+ME,PG&&"Vorerkrankungen: "+PG].filter(Boolean).join("\n")],
+   ["F","Fazit",1,"Aufnehmendes Team wiederholt: Identifikation, Notfallereignis, Notfallpriorität (ohne Vitalwerte) mit Handlung.",""],
+   ["T","Teamfragen",1,"Raum für wesentliche Rückfragen des aufnehmenden Teams.",""]];
+  document.getElementById("ovBody").innerHTML=rows.map(([k,t,crm,h,f])=>`<div class="sh${crm?" crm":""}"><div class="k">${k}</div><div><h3>${t}</h3><p class="hint">${h}</p>${f?`<div class="fill">${esc(f)}</div>`:""}</div></div>`).join("");
+}
+let lastFocus=null;
+function refusalText(){
+  const sec=(h,items)=>`<div class="sh"><div class="k">${h[0]}</div><div><h3>${h[1]}</h3><ul class="crit">${items.map(i=>`<li>${i}</li>`).join("")}</ul></div></div>`;
+  document.getElementById("ovBody").innerHTML=`<p class="wip">Ein vollständiger Vorlesetext ist noch in Arbeit. Bis dahin: Kriterien laut Gemeinsamem Kompendium Rettungsdienst 2026 (S. 17–21).</p>
+  ${sec(["1","Voraussetzungen prüfen"],[
+    "Einwilligungsfähigkeit prüfen. Bei <b>nein / unklar</b>: Notarzt hinzuziehen, gesetzlichen Vertreter einbeziehen.",
+    "Behandlungspflichtigkeit einschätzen: <b>hoch</b> bei manifestem ABCDE-Problem oder wenn sich eines nicht sicher ausschließen lässt, sonst <b>niedrig</b>.",
+    "Bei Ablehnung indizierter Maßnahmen: Notarzt hinzuziehen."])}
+  ${sec(["2","Inhalt der Aufklärung"],[
+    "Aufklärung durch die höchstqualifizierte Person vor Ort, eigene Qualifikation dem Pat. erläutern.",
+    "Notwendigkeit von Behandlung und Transport erklären: vor Ort keine abschließende Diagnose und Therapie möglich.",
+    "Vorteile, Risiken, mögliche Folgen und Alternativen benennen.",
+    "Bei hoher Behandlungspflichtigkeit <b>verschärfte Aufklärung</b>: mögliche gravierende Folgen der Ablehnung klar und deutlich benennen.",
+    "Verständliche Sprache ohne Fachbegriffe. Pat. muss die Tragweite seiner Entscheidung überblicken können."])}
+  ${sec(["3","Abschluss"],[
+    "Formblatt ausfüllen.",
+    "Unterschrift des Pat. ist empfehlenswert, aber nicht zwingend, und immer freiwillig ohne Druck. Unterschrift eines gesetzlichen Vertreters möglichst einholen.",
+    "Zeugen benennen: Unterschrift der Besatzung immer, Dritte (z. B. Angehörige) nach Möglichkeit. Schweigepflicht beachten.",
+    "Kopie verbleibt beim Pat.",
+    "Angemessene Hilfe sicherstellen: erneuter Notruf 112, ärztlicher Bereitschaftsdienst 116 117, Hausarzt."])}`;
+}
+const OV={
+  handover:["Übergabe nach SINNHAFT","Spickzettel für die Übergabe. Erscheint nicht im Freitext. Grau hinterlegt: was du in diesem Einsatz schon angeklickt hast.",handover],
+  refusal:["Aufklärung bei Transportverweigerung","Checkliste für die Aufklärung vor der Unterschrift auf dem Tablet. Erscheint nicht im Freitext.",refusalText]};
+function openOv(kind="handover"){const [t,sub,fill]=OV[kind];document.getElementById("ovTitle").textContent=t;document.getElementById("ovSub").textContent=sub;fill();lastFocus=document.activeElement;const o=document.getElementById("ov");o.hidden=false;document.getElementById("ovClose").focus()}
+function closeOv(){document.getElementById("ov").hidden=true;lastFocus?.focus()}
+document.getElementById("ovClose").onclick=closeOv;
+document.getElementById("ov").addEventListener("click",e=>{if(e.target.id==="ov")closeOv()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.getElementById("ov").hidden)closeOv()});
+root.addEventListener("click",e=>{if(e.target.closest("#openHandover"))openOv("handover");const a=e.target.closest(".actbtn");if(a)openOv(a.dataset.act)});
+document.getElementById("paras").addEventListener("change",e=>{st.paras=e.target.checked;update()});
+function reset(){st={sel:{},txt:{},meds:[],extra:"",paras:st.paras};document.getElementById("exampleNote").hidden=true;render();window.scrollTo({top:0})}
+document.getElementById("reset").onclick=reset;
+document.getElementById("reset2").onclick=reset;
+async function copy(){
+  const t=build(),toast=document.getElementById("toast");
+  if(!t){toast.textContent="Noch kein Text zum Kopieren.";return}
+  try{await navigator.clipboard.writeText(t);toast.textContent="Kopiert. Jetzt im Protokoll einfügen."}
+  catch(e){const r=document.createRange();r.selectNodeContents(document.getElementById("out"));const s=getSelection();s.removeAllRanges();s.addRange(r);toast.textContent="Text ist markiert. Bitte manuell kopieren."}
+  setTimeout(()=>toast.textContent="",3500);
+}
+document.getElementById("copy").onclick=copy;
+document.getElementById("copy2").onclick=async()=>{await copy();document.getElementById("out").scrollIntoView({behavior:"smooth",block:"center"})};
+document.getElementById("jump").onclick=()=>document.getElementById("out").scrollIntoView({behavior:"smooth",block:"center"});
+
+const saved=load();
+if(saved&&saved.sel){st=Object.assign({sel:{},txt:{},meds:[],extra:"",paras:true},saved)}else{st=JSON.parse(JSON.stringify(EXAMPLE));document.getElementById("exampleNote").hidden=false}
+render();
+
+// Offline-Speicher registrieren
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+</script>
+
+</body>
+</html>
