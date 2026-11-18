@@ -26,16 +26,16 @@ html{-webkit-text-size-adjust:100%}
 /* Layout: links chronologische Abschnitte mit Klick-Bausteinen, rechts mitlaufender Freitext (Handy: Text unten + feste Kopierleiste) */
 :root{
   --bg:#EEF2F5; --surface:#FFFFFF; --ink:#15202B; --muted:#5A6876; --line:#D6DEE5;
-  --accent:#0A5DA6; --accent-ink:#FFFFFF; --accent-soft:#E2EEF9; --note:#FFF5DB; --note-ink:#6B4E00;
+  --accent:#0A5DA6; --accent-ink:#FFFFFF; --accent-soft:#E2EEF9; --note:#FFF5DB; --note-ink:#6B4E00; --ok:#1E9E57;
   --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0E141A; --surface:#16202A; --ink:#E4EBF1; --muted:#93A2B0; --line:#25323F;
-  --accent:#5DA8EE; --accent-ink:#071421; --accent-soft:#183049; --note:#2E2715; --note-ink:#E9CF85; color-scheme:dark}}
+  --accent:#5DA8EE; --accent-ink:#071421; --accent-soft:#183049; --note:#2E2715; --note-ink:#E9CF85; --ok:#3CC97E; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0E141A; --surface:#16202A; --ink:#E4EBF1; --muted:#93A2B0; --line:#25323F;
-  --accent:#5DA8EE; --accent-ink:#071421; --accent-soft:#183049; --note:#2E2715; --note-ink:#E9CF85; color-scheme:dark}
+  --accent:#5DA8EE; --accent-ink:#071421; --accent-soft:#183049; --note:#2E2715; --note-ink:#E9CF85; --ok:#3CC97E; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 96px}
@@ -97,6 +97,88 @@ aside h2{margin:0;font-size:1rem;font-weight:600;display:flex;justify-content:sp
 .sh.crm h3::after{content:"CRM";font-size:.66rem;letter-spacing:.06em;color:var(--accent);border:1px solid var(--accent);border-radius:4px;padding:0 4px;margin-left:8px;vertical-align:2px}
 .wip{background:var(--note);color:var(--note-ink);border-radius:8px;padding:10px 12px;font-size:.9rem;margin:0 0 8px}
 .crit{margin:6px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.ddxbox{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:6px}
+.ddxbox h2{margin:0;font-size:1rem;font-weight:600}
+.ddxnote,.ddxempty{margin:0;color:var(--muted);font-size:.82rem}
+.ddxwrap{overflow-x:auto}
+.ddxt{width:100%;border-collapse:collapse;font-size:.85rem}
+.ddxt th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500;padding:4px 6px;border-bottom:1px solid var(--line)}
+.ddxt td{padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.ddxt td:first-child{font-weight:600;min-width:9em}
+.ddxt td.ref{color:var(--muted);font-size:.78rem;min-width:7em}
+.lvl{display:inline-flex;gap:2px;margin-right:6px;vertical-align:1px}
+.lvl i{width:5px;height:10px;border-radius:1px;background:var(--line)}
+.lvl.l1 i:nth-child(-n+1),.lvl.l2 i:nth-child(-n+2),.lvl.l3 i{background:var(--accent)}
+#openQs{align-self:flex-start}
+.qtop{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 0 12px}
+.qlbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.qchip{background:var(--accent-soft);color:var(--ink);border-radius:999px;padding:3px 10px;font-size:.85rem;font-weight:500}
+.qlist{display:flex;flex-direction:column}
+.qrow{display:flex;flex-direction:column;gap:6px;padding:10px 0;border-top:1px solid var(--line)}
+.qrow p{margin:0;font-size:.98rem}
+.qfoot{padding-top:12px;border-top:1px solid var(--line)}
+.owndx{display:flex;flex-direction:column;gap:6px}
+.owndx select{width:100%}
+.ddxh{margin:6px 0 0;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500}
+.refbtns{display:flex;flex-wrap:wrap;gap:4px}
+.mini{font:inherit;font-size:.76rem;font-weight:500;border:1px solid var(--accent);color:var(--accent);background:var(--surface);border-radius:6px;padding:4px 7px;cursor:pointer;white-space:nowrap;min-height:30px}
+.mini:hover{background:var(--accent-soft)}
+.mini:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mini.off{border-color:var(--line);color:var(--muted);cursor:default}
+.ovcard.wide{max-width:980px}
+[hidden]{display:none!important}
+.cave{background:var(--note);color:var(--note-ink);border-radius:8px;padding:10px 12px;font-size:.88rem;margin:0 0 10px}
+.cave ul{margin:6px 0 0;padding-left:1.1em}
+.medcard{border-top:1px solid var(--line);padding:10px 0;display:flex;flex-direction:column;gap:4px}
+.medhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.medhead h3{margin:0;font-size:1rem}
+.medcard p{margin:0;font-size:.9rem}
+.k2{display:inline-block;min-width:6.5em;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.pdfbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;position:sticky;top:0;background:var(--surface);padding:4px 0;z-index:1}
+.pgno{font-family:var(--mono);font-size:.82rem;color:var(--muted);padding:0 4px}
+.pdfcanvas{overflow:auto;border:1px solid var(--line);border-radius:6px;background:#fff;max-width:100%}
+.pdfcanvas canvas{display:block}
+.pick{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.pick p{margin:0}
+.pickbtn{display:inline-flex;align-items:center;cursor:pointer}
+.dd{border:1px solid var(--line);border-radius:8px;background:var(--bg);min-width:0}
+.dd summary{cursor:pointer;padding:8px 12px;list-style:none;display:flex;justify-content:space-between;gap:8px;align-items:center;min-height:40px}
+.dd summary::-webkit-details-marker{display:none}
+.dd summary::after{content:"▾";color:var(--muted);flex:none}
+.dd[open] summary::after{content:"▴"}
+.dd summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+.ddph{color:var(--muted)}
+.ddsel{font-weight:500;overflow-wrap:anywhere}
+.ddlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:2px 10px;padding:6px 12px 10px;border-top:1px solid var(--line);max-height:320px;overflow:auto}
+.ddopt{display:flex;gap:8px;align-items:center;padding:6px 0;font-size:.92rem;cursor:pointer}
+.ddopt input{width:18px;height:18px;flex:none;accent-color:var(--accent)}
+.chip.morebtn{border-style:dashed;color:var(--accent)}
+.stuwrap{display:flex;flex-direction:column;gap:6px;min-width:0}
+.stufind{padding-left:10px;border-left:2px solid var(--accent)}
+.chip.abbtn[aria-pressed="true"]{background:var(--note);border-color:var(--note-ink);color:var(--note-ink)}
+h2 .allob{margin-left:auto;white-space:nowrap;flex:none;font-size:.8rem;min-height:30px;padding:4px 10px;font-weight:500}
+.stucat{display:flex;flex-direction:column;gap:6px}
+.stucat>.catbtn{align-self:flex-start}
+.stusub{padding-left:10px;border-left:2px dashed var(--line)}
+.stufind{display:flex;flex-direction:column;gap:6px}
+.ynrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ynl{font-size:.88rem;font-weight:500}
+.ddgrp{grid-column:1/-1}
+.ddsub{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0 10px;margin:0 0 4px 26px;padding-left:10px;border-left:2px solid var(--accent)}
+.dtrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;min-width:0}
+.dtrow .dt{flex:1 1 200px;min-width:0;font-family:var(--sans)}
+.ddown{grid-column:1/-1;display:flex;flex-direction:column;gap:4px;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding-top:8px;border-top:1px dashed var(--line);margin-top:4px}
+.ddown input{text-transform:none;letter-spacing:0;font-size:.95rem;font-family:var(--sans)}
+.ddclose{grid-column:1/-1;justify-self:end;margin-top:6px}
+.titlerow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.mode{display:inline-flex;align-items:center;gap:12px;font-size:.84rem;font-weight:500;cursor:pointer;user-select:none;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 8px 6px 12px;line-height:1.2}
+.mode:has(input:checked){border-color:var(--ok)}
+.mode input{appearance:none;-webkit-appearance:none;width:40px;height:24px;margin:0;border-radius:999px;background:var(--line);position:relative;cursor:pointer;flex:none;transition:background .2s}
+.mode input::before{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.mode input:checked{background:var(--ok)}
+.mode input:checked::before{transform:translateX(16px)}
+.mode input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.mode input,.mode input::before{transition:none}}
 .bar{display:none}
 @media (max-width:860px){
   .wrap{grid-template-columns:minmax(0,1fr)}
@@ -111,8 +193,8 @@ aside h2{margin:0;font-size:1rem;font-weight:600;display:flex;justify-content:sp
 <div class="wrap">
   <header>
     <div>
-      <h1>RD Freitext-Baukasten</h1>
-      <p class="sub">Einsatz chronologisch durchklicken, Text kopieren, ins Protokoll einfügen. <span style="opacity:.7">· Version 1.0</span></p>
+      <div class="titlerow"><h1>RD Freitext-Baukasten</h1><label class="mode" for="docyou"><span>Protokoll für Pulsation docYou</span><input type="checkbox" id="docyou" role="switch"></label></div>
+      <p class="sub">Einsatz chronologisch durchklicken, Text kopieren, ins Protokoll einfügen. <span style="opacity:.7">· Version 1.2</span></p>
     </div>
     <div class="row">
       <button class="btn" id="reset" type="button">Neuer Einsatz</button>
@@ -136,6 +218,18 @@ aside h2{margin:0;font-size:1rem;font-weight:600;display:flex;justify-content:sp
       <button class="btn primary" id="copy" type="button">Text kopieren</button>
     </div>
     <div class="toast" id="toast"></div>
+    <div class="ddxbox">
+      <h2>Verdachtsdiagnose</h2>
+      <div class="owndx">
+        <select id="ownDx" aria-label="Eigene Verdachtsdiagnose"></select>
+        <input class="txt" id="ownDxText" placeholder="Eigene Verdachtsdiagnose" hidden aria-label="Eigene Verdachtsdiagnose eintippen">
+        <div class="refbtns" id="ownDxAct"></div>
+      </div>
+      <h3 class="ddxh">Vorschläge aus den Befunden</h3>
+      <p class="ddxnote">Hinweise aus den angeklickten Befunden, keine Diagnose. Erscheint nicht im Freitext.</p>
+      <div id="ddx"></div>
+      <button class="btn" id="openQs" type="button">Gezielt nachfragen</button>
+    </div>
   </aside>
 </div>
 
@@ -152,6 +246,7 @@ aside h2{margin:0;font-size:1rem;font-weight:600;display:flex;justify-content:sp
   <button class="btn" id="jump" type="button">Ansehen</button>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 // ---------- Bausteine ----------
 // m: single | multi | text. show:{k,i:[…]} blendet bedingt ein. silent: nur über lead/cat verwendet.
@@ -170,22 +265,40 @@ const S = [
  ]},
  {t:"Auffindesituation", g:[
   {l:"Position", m:"single", silent:true, o:[["Sitzend","sitzend"],["Liegend","liegend"],["Stehend","stehend"]]},
-  {l:"Wo", m:"single", silent:true, o:[["Im Bett","im Bett"],["Am Boden","am Boden"],["Auf Stuhl / Sessel","auf einem Stuhl"],["Im Fahrzeug","im Fahrzeug"]]},
+  {l:"Wo", m:"single", silent:true, oif:i=>{const e=sel("0-0")[0];
+      if(i===0)return e!==2&&e!==4;        // Bett nicht bei Öffentlich / Arbeitsplatz
+      if(i===3)return e==null||e===2||e===4; // Fahrzeug nur bei Öffentlich / Arbeitsplatz
+      if(i>=4)return e===2;                // Straße, Geschäft, Veranstaltung nur bei Öffentlich
+      return true},
+    o:[["Im Bett","im Bett"],["Am Boden","am Boden"],["Auf Stuhl / Sessel","auf einem Stuhl"],["Im Fahrzeug","im Fahrzeug"],["Straße","auf der Straße"],["Geschäft","in einem Geschäft"],["Veranstaltung","auf einer Veranstaltung"]]},
   {l:"Vor Ort", m:"multi", p:"Vor Ort anwesend: ", o:["Angehörige","Pflegepersonal","Ersthelfer","Hausarzt","Polizei","Feuerwehr"]}
  ], lead:si=>{const a=[pick(si,0),pick(si,1)].filter(Boolean);return a.length?"Pat. wird "+a.join(" ")+" angetroffen.":""}},
  {t:"Primary Assessment (xABC)", g:[
   {l:"Ersteindruck", m:"single", silent:true, o:[["Nicht kritisch","nicht kritisch"],["Potentiell kritisch","potentiell kritisch"],["Kritisch","kritisch"]]},
   {l:"Problem in", m:"multi", silent:true, show:{k:"2-0",i:[1,2]}, o:[["x – Blutung","x"],["A – Atemweg","A"],["B – Atmung","B"],["C – Kreislauf","C"]]},
   {l:"Begründung", m:"text", show:{k:"2-0",i:[1,2]}, ph:"z. B. Tachypnoe, spritzende Blutung Oberschenkel"},
-  {l:"Traumaereignis?", m:"single", o:[["Ja → STU","Traumatisches Ereignis, daher schnelle Trauma-Untersuchung (STU)."],["Nein","Kein Hinweis auf ein Traumaereignis."]]}
+  {l:"Traumaereignis?", m:"single", o:[["Ja → STU","Traumatisches Ereignis, daher schnelle Trauma-Untersuchung (STU)."],["Nein","Kein Hinweis auf ein Traumaereignis."]]},
+  {l:"Sturzereignis?", m:"single", show:{k:"2-3",i:[0]}, fn:()=>sturzText(), o:[["Ja","ja"],["Nein","nein"]]},
+  {l:"Sturzart", m:"single", silent:true, show:{k:"2-4",i:[0]}, o:[["Stolpersturz","Stolpersturz"],["Umgeknickt","Umknicktrauma"],["Synkope / Kollaps","Sturz nach Synkope / Kollaps"]]},
+  {l:"Durchgehend wach?", m:"single", silent:true, show:{k:"2-4",i:[0]}, o:[["Ja","ja"],["Nein","nein"]]},
+  {l:"Erinnerung an das Ereignis?", m:"single", silent:true, show:{k:"2-4",i:[0]}, o:[["Ja","ja"],["Nein","nein"]]},
+  {l:"Auf den Kopf gefallen?", m:"single", silent:true, show:{k:"2-4",i:[0]}, o:[["Ja","ja"],["Nein","nein"],["Unsicher","unsicher"]]},
+  {l:"Antikoaguliert?", m:"single", silent:true, show:{k:"2-4",i:[0]}, o:[["Ja","ja"],["Nein","nein"]]},
+  {l:"Womit", m:"dropdown", silent:true, own:true, ph:"Antikoagulans wählen …", show:{k:"2-9",i:[0]},
+   o:["Apixaban (Eliquis®)","Rivaroxaban (Xarelto®)","Edoxaban (Lixiana®)","Dabigatran (Pradaxa®)","Phenprocoumon (Marcumar®)","Warfarin (Coumadin®)","Enoxaparin / NMH (Clexane®)","Heparin s.c.","ASS (Acetylsalicylsäure)"]}
  ], lead:si=>{const s=pick(si,0); if(!s)return ""; const l=sel(si+"-1").map(i=>S[si].g[1].o[i][1]);
    return "Primary Assessment (xABC): "+s+(visible(S[si].g[1].show)&&l.length?" ("+l.join(", ")+")":"")+"."}},
  {t:"Schnelle Trauma-Untersuchung (STU)", show:{k:"2-3",i:[0]}, stu:true, g:[
   {l:"Kopf / HWS", r:"Kopf/HWS", m:"multi", o:[["o. B.","ohne Befund",1],["Kopfverletzung","Verletzung am Kopf"],["HWS-Druckschmerz","Druckschmerz HWS"]]},
-  {l:"Thorax", r:"Thorax", m:"multi", o:[["Stabil, o. B.","ohne Befund",1],["Instabil","instabil"],["Prellmarke","Prellmarke"],["Druckschmerz","Druckschmerz"]]},
-  {l:"Abdomen", r:"Abdomen", m:"multi", o:[["Weich, o. B.","ohne Befund",1],["Abwehrspannung","Abwehrspannung"],["Prellmarke","Prellmarke"]]},
-  {l:"Becken", r:"Becken", m:"multi", o:[["Stabil, o. B.","ohne Befund",1],["Instabil","instabil"],["Druckschmerz","Druckschmerz"]]},
-  {l:"Extremitäten", r:"Extremitäten", m:"multi", o:[["o. B.","ohne Befund",1],["Fehlstellung","Fehlstellung"],["Offene Wunde","offene Wunde"],["DMS gestört","DMS gestört"]]},
+  {l:"Thorax", r:"Thorax", m:"multi", o:[["o. B.","ohne Befund",1],["Instabil","instabil"],["Prellmarke","Prellmarke"],["Druckschmerz","Druckschmerz"]]},
+  {l:"Abdomen", r:"Abdomen", m:"multi", o:[["o. B.","ohne Befund",1],["Abwehrspannung","Abwehrspannung"],["Prellmarke","Prellmarke"]]},
+  {l:"Becken", r:"Becken", m:"multi", o:[["o. B.","ohne Befund",1],["Instabil","instabil"],["Druckschmerz","Druckschmerz"]]},
+  {l:"Extremitäten", r:"Extremitäten", m:"multi",
+   cats:[{id:"s",l:"Sichere Frakturzeichen",t:"sichere Frakturzeichen"},{id:"u",l:"Unsichere Frakturzeichen",t:"unsichere Frakturzeichen"},{id:"w",l:"Wunde",t:"Wunde"},{id:"d",l:"Nein",t:"pDMS beeinträchtigt",ex:9}],
+   lay:["s","u",{row:["w",13]},{yn:9,no:"d",l:"pDMS intakt?"}],
+   o:[["o. B.","ohne Befund",1],["Fehlstellung","Fehlstellung",0,"s"],["Offene Wunde","offene Wunde",0,null,1],["DMS gestört","DMS gestört",0,null,1],["Krepitation","Krepitation",0,"s"],["Offene Fraktur","offene Fraktur",0,"s"],["Schmerzen","Schmerzen",0,"u"],["Schwellung","Schwellung",0,"u"],["Rötung","Rötung",0,"u"],
+      ["pDMS intakt","pDMS intakt",0,null],["Durchblutung","Durchblutung",0,"d"],["Motorik","Motorik",0,"d"],["Sensorik","Sensorik",0,"d"],["Rötung","Rötung",0,null],
+      ["Platzwunde","Platzwunde",0,"w"],["Schnittwunde","Schnittwunde",0,"w"],["Risswunde","Risswunde",0,"w"],["Schürfwunde","Schürfwunde",0,"w"],["Pergamenthaut eröffnet","Pergamenthaut eröffnet",0,"w"]]},
   {l:"Wirbelsäule", r:"Wirbelsäule", m:"multi", o:[["o. B.","ohne Befund",1],["Druckschmerz","Druckschmerz"],["Stufenbildung","Stufenbildung"]]}
  ]},
  {t:"Secondary Assessment (xABCDE)", list:{head:"Secondary Assessment (xABCDE)",L:XABCDE}, g:[
@@ -212,15 +325,16 @@ const S = [
   {L:"D", l:"T – Time", m:"text", silent:true, show:{k:"4-15",i:[1]}, ph:"Symptombeginn / Last Seen Well, z. B. 09:40 Uhr"},
   {L:"E", l:"Befund", m:"single", o:[["Keine Verletzungen","keine äußeren Verletzungen"],["Prellmarke","Prellmarke, s. Verletzungsmuster"],["Wunde","offene Wunde, versorgt"]]},
   {L:"E", l:"Temperatur", m:"single", o:[["Normotherm","normotherm"],["Hypertherm","hypertherm"],["Hypotherm","hypotherm"]]},
-  {L:"E", l:"Schmerz (NRS)", m:"single", p:"Schmerz NRS ", s:"/10", o:["0","1","2","3","4","5","6","7","8","9","10"]}
+  {L:"E", l:"Schmerz (NRS)", m:"single", p:"Schmerz NRS ", s:"/10", o:["0","1","2","3","4","5","6","7","8","9","10"]},
+  {L:"C", l:"Halsvenen", m:"single", o:[["Nicht gestaut","V. jugularis ext. nicht gestaut"],["Gestaut","gestaute V. jugularis ext."]]}
  ]},
  {t:"Anamnese (SAMPLER)", list:{head:"Anamnese (SAMPLER)",L:SAMPLER}, g:[
-  {L:"S", l:"Symptome", m:"multi", o:["Brustschmerzen","Atemnot","Übelkeit","Schwindel","Bauchschmerzen","Kopfschmerzen","allgemeine Schwäche","Schmerzen nach Sturz"]},
+  {L:"S", l:"Symptome", m:"multi", hide:true, o:["Brustschmerzen","Atemnot","Übelkeit","Schwindel","Bauchschmerzen","Kopfschmerzen","allgemeine Schwäche","Schmerzen nach Sturz"]},
   {L:"A", l:"Allergien", m:"single", o:[["Keine bekannt","keine bekannt"],["S. Anhang","s. Anhang"],["Unbekannt","unbekannt"]]},
   {L:"M", l:"Medikamente", m:"single", o:[["S. Plan","s. Medikamentenplan"],["S. Anhang","s. Anhang"],["Keine","keine Dauermedikation"],["Unbekannt","unbekannt"]]},
   {L:"P", l:"Vorerkrankungen", m:"multi", o:["KHK","arterielle Hypertonie","Diabetes mellitus","COPD","Vorhofflimmern","Z. n. Apoplex","Demenz",["S. Anhang","s. Anhang"],["Keine bekannt","keine bekannt"],["Unbekannt","unbekannt"]]},
   {L:"L", l:"Letzte Mahlzeit / Ausscheidung", m:"single", o:[["Unauffällig","unauffällig"],["Nicht erfragbar","nicht erfragbar"]]},
-  {L:"E", l:"Beginn", m:"single", o:[["Plötzlich","plötzlicher Beginn"],["Seit Stunden","seit einigen Stunden"],["Seit Tagen","seit mehreren Tagen"],["Zunehmend","langsam zunehmend"]]},
+  {L:"E", l:"Beginn", m:"single", hide:true, o:[["Plötzlich","plötzlicher Beginn"],["Seit Stunden","seit einigen Stunden"],["Seit Tagen","seit mehreren Tagen"],["Zunehmend","langsam zunehmend"]]},
   {L:"E", l:"Hergang", m:"text", ph:"z. B. beim Treppensteigen aufgetreten"},
   {L:"R", l:"Risikofaktoren", m:"multi", o:["Nikotinabusus","Adipositas","Immobilität","Alkoholabusus",["Keine bekannt","keine bekannt"]]}
  ]},
@@ -238,34 +352,71 @@ const S = [
   {L:"C", l:"Medikamente", m:"meds", show:{k:"6-9",i:[0]}, fn:()=>{const l=st.meds.filter(m=>(m.n||"").trim()).map(m=>[m.n.trim(),(m.d||"").trim()?m.d.trim()+" "+(m.u||""):"",m.r||""].filter(Boolean).join(" ")+(m.t?" (titriert)":"")); return l.length?"Medikamente: "+l.join(", "):""}},
   {L:"E", l:"Maßnahme", m:"multi", fn:si=>{const w=sel(si+"-12").map(i=>S[si].g[12].o[i][1]); return sel(si+"-11").map(i=>i===1&&w.length?"Wundversorgung mittels "+list(w):S[si].g[11].o[i][1]).join(", ")}, o:["Wärmeerhalt","Wundversorgung","Vakuummatratze","Zervikalstütze","Schaufeltrage","Kühlung"]},
   {L:"E", l:"Wundversorgung", m:"multi", silent:true, show:{k:"6-11",i:[1]}, o:[["Verband","Verband"],["Druckverband","Druckverband"],["Tourniquet","Tourniquet"],["Hämostyptikum","Hämostyptikum"]]},
-  {L:"V", l:"Verlauf", m:"single", o:[["Besserung","Besserung der Beschwerden unter den Maßnahmen"],["Unverändert","keine Veränderung des Zustandsbildes"],["Verschlechterung","Verschlechterung des Zustandsbildes"]]}
+  {L:"V", l:"Verlauf", m:"single", fn:si=>{const v=sel(si+"-13")[0]; if(v==null)return "";
+     // ohne vorherige Maßnahmen nur "Besserung der Beschwerden"
+     const hasM=S[si].g.some((g,gi)=>g.L!=="V"&&!g.silent&&groupText(si,gi,true));
+     const t=[v===0&&!hasM?"Besserung der Beschwerden":S[si].g[13].o[v][1]];
+     if(v===0){const a=nrsVor(), b=gVis(si,14)?sel(si+"-14")[0]:null; if(a!=null&&b!=null)t.push(b<a?"NRS von "+a+"/10 auf "+b+"/10 gesenkt":"NRS unverändert "+a+"/10");
+       const r=gVis(si,15)?sel(si+"-15")[0]:null; if(r===0)t.push("Beschwerden rückläufig"); if(r===1)t.push("Beschwerden nicht rückläufig")}
+     return t.join("; ")}, o:[["Besserung","Besserung der Beschwerden unter den Maßnahmen"],["Unverändert","keine Veränderung des Zustandsbildes"],["Verschlechterung","Verschlechterung des Zustandsbildes"]]},
+  {L:"V", l:"NRS jetzt", m:"single", silent:true, show:{k:"6-13",i:[0]}, cond:()=>(nrsVor()||0)>=1, o:["0","1","2","3","4","5","6","7","8","9","10"]},
+  {L:"V", l:"Beschwerden rückläufig?", m:"single", silent:true, show:{k:"6-13",i:[0]}, o:[["Ja","ja"],["Nein","nein"]]}
  ]},
  {t:"Transport", g:[
   {l:"Transport erfolgt?", m:"single", silent:true, o:[["Ja","ja"],["Nein","nein"]]},
-  {l:"Art", m:"single", show:{k:"7-0",i:[0]}, fn:si=>{const v=sel(si+"-1")[0]; if(v===0)return "Transport sitzend.";
+  {l:"Art", m:"single", silent:true, show:{k:"7-0",i:[0]}, fn:si=>{const v=sel(si+"-1")[0]; if(v===0)return "Transport sitzend.";
      if(v===1){const l=pick(si,2);return "Transport liegend"+(l?" in "+l:"")+"."} return ""}, o:[["Sitzend","s"],["Liegend","l"]]},
   {l:"Lagerung", m:"single", silent:true, show:{k:"7-1",i:[1]}, o:[["Flach","Flachlagerung"],["Oberkörperhoch","Oberkörperhochlagerung"],["Stufenbett","Stufenbettlagerung"],["Schocklage","Schocklagerung"],["Fritsch","Fritsch-Lagerung"],["Stabile Seitenlage","stabiler Seitenlage"]]},
-  {l:"Begleitung", m:"single", show:{k:"7-0",i:[0]}, o:[["Ohne NA","Transport ohne NA-Begleitung."],["Mit NA","Transport in NA-Begleitung, weiteres s. Notarztprotokoll."]]},
-  {l:"Fachabteilung", m:"single", silent:true, show:{k:"7-0",i:[0]}, o:[["Internistisch","Innere Medizin"],["Chirurgisch","Chirurgie / Unfallchirurgie"],["Neurologisch","Neurologie"],["HNO","HNO"],["Urologie","Urologie"],["Gynäkologie","Gynäkologie"],["Kreißsaal","Kreißsaal"],["Kinderklinik","Kinderklinik"]]},
-  {l:"Zielklinik", m:"single", show:{k:"7-0",i:[0]}, fn:si=>{const p=[pick(si,4),pick(si,5)].filter(Boolean); return p.length?"Zielklinik: "+p.join(", ")+".":""}, o:[["ZNA","Zentrale Notaufnahme"],["CPU","Chest Pain Unit"],["Stroke Unit","Stroke Unit"],["Schockraum","Schockraum"]]},
-  {l:"Transportverlauf", m:"single", show:{k:"7-0",i:[0]}, o:[["Komplikationslos","Der Transport verlief komplikationslos."],["Mit Komplikationen","Im Transportverlauf traten Komplikationen auf, s. Ergänzung."]]},
+  {l:"Begleitung", m:"single", silent:true, show:{k:"7-0",i:[0]}, o:[["Ohne NA","Transport ohne NA-Begleitung."],["Mit NA","Transport in NA-Begleitung, weiteres s. Notarztprotokoll."]]},
+  {l:"Fachabteilung", m:"single", silent:true, more:3, show:{k:"7-0",i:[0]}, o:[["Internistisch","Innere Medizin"],["Chirurgisch","Chirurgie / Unfallchirurgie"],["Neurologisch","Neurologie"],["HNO","HNO"],["Urologie","Urologie"],["Gynäkologie","Gynäkologie"],["Kreißsaal","Kreißsaal"],["Kinderklinik","Kinderklinik"],["Onkologie","Onkologie"]]},
+  {l:"Zielklinik", m:"single", silent:true, show:{k:"7-0",i:[0]}, fn:si=>{const p=[pick(si,4),pick(si,5)].filter(Boolean); return p.length?"Zielklinik: "+p.join(", ")+".":""}, o:[["ZNA","Zentrale Notaufnahme"],["CPU","Chest Pain Unit"],["Stroke Unit","Stroke Unit"],["Schockraum","Schockraum"]]},
+  {l:"Transportverlauf", m:"single", silent:true, show:{k:"7-0",i:[0]}, o:[["Komplikationslos","Der Transport verlief komplikationslos."],["Mit Komplikationen","Im Transportverlauf traten Komplikationen auf, s. Ergänzung."]]},
   {l:"Stattdessen", m:"single", show:{k:"7-0",i:[1]}, o:[
     ["Ambulante Untersuchung / Behandlung","Ambulante Untersuchung und Behandlung vor Ort, kein Transport erforderlich. Pat. wurde aufgeklärt, bei Bedarf den kassenärztlichen Notdienst (116 117) zu kontaktieren, den Hausarzt aufzusuchen oder sich selbstständig in einer Notaufnahme vorzustellen sowie bei akuter Zustandsverschlechterung erneut den Notruf 112 zu wählen."],
     ["Transportverweigerung","Pat. lehnt den Transport nach ausführlicher Aufklärung über mögliche Folgen ab. Pat. wurde über Alternativen informiert: kassenärztlicher Notdienst (116 117), Hausarzt, selbstständige Vorstellung in einer Notaufnahme sowie bei akuter Zustandsverschlechterung erneuter Notruf 112."]]},
   {l:"Unterschrift", m:"single", show:{k:"7-7",i:[1]}, o:[["Pat. unterschreibt","Die Transportverweigerung wurde vom Pat. unterschrieben."],["Pat. verweigert","Pat. verweigert die Unterschrift."],["Gesetzl. Vertreter","Die Transportverweigerung wurde vom gesetzlichen Vertreter unterschrieben."]]},
   {l:"Aufklärung", m:"action", act:"refusal", btn:"Aufklärung: Kriterien laut Kompendium", show:{k:"7-7",i:[1]}}
- ]},
+ ], lead:si=>{
+   // "Transport sitzend, ohne NA, Zielklinik: …, komplikationslos."
+   if(sel(si+"-0")[0]!==0)return "";
+   const v=k=>gVis(si,k)?sel(si+"-"+k)[0]:undefined, p=[];
+   if(v(1)===0)p.push("sitzend"); if(v(1)===1){const l=pick(si,2);p.push("liegend"+(l?" in "+l:""))}
+   if(v(3)===0)p.push("ohne NA"); if(v(3)===1)p.push("in NA-Begleitung (weiteres s. Notarztprotokoll)");
+   const z=[pick(si,4),pick(si,5)].filter(Boolean); if(z.length)p.push("Zielklinik: "+z.join(" / "));
+   if(v(6)===0)p.push("komplikationslos"); if(v(6)===1)p.push("mit Komplikationen (s. Ergänzung)");
+   return p.length?"Transport "+p.join(", ")+".":"";
+ }},
  {t:"Aufklärung & Einwilligung", end:true, g:[
   {l:"BGB § 630e/d", m:"single", o:[["Erfolgte","Aufklärung und Einwilligung nach BGB § 630e und § 630d erfolgte."],["Mutmaßl. Wille","Pat. aufgrund einer Bewusstseinsstörung nicht einwilligungsfähig, Handeln im mutmaßlichen Patientenwillen nach BGB § 630d."],["Betreuer / Vollmacht","Aufklärung und Einwilligung nach BGB § 630e und § 630d erfolgte über den gesetzlichen Betreuer bzw. Bevollmächtigten."],["Ablehnung","Aufklärung nach BGB § 630e erfolgte, Pat. ist einwilligungsfähig und lehnt die Maßnahmen ab."]]}
- ]}
+ ]},
+ {t:"Beschwerden", g:[
+  {l:"Pat.", m:"single", silent:true, o:[["Patient","Der Patient"],["Patientin","Die Patientin"]]},
+  {l:"Symptome", m:"dropdown", silent:true, own:true, ph:"Symptome wählen …", cats:[{id:"p",l:"Schmerzen",t:"Schmerzen"}], porder:[5,25,0,4,9,26,27,23],
+   // [Anzeige, Text, -, Kategorie, ausgeblendet, Bezeichnung für Verdachtsdiagnosen]
+   o:[["Brust","Brust",0,"p",0,"Brustschmerzen"],"Atemnot","Übelkeit","Schwindel",["Bauch","Bauch",0,"p",0,"Bauchschmerzen"],["Kopf","Kopf",0,"p",0,"Kopfschmerzen"],["Allgemeine Schwäche","allgemeine Schwäche"],["Schmerzen nach Sturz","Schmerzen nach Sturz",0,null,1],"Erbrechen",["Rücken","Rücken",0,"p",0,"Rückenschmerzen"],
+      ["Kurze Bewusstlosigkeit","kurzzeitige Bewusstlosigkeit"],"Krampfanfall",["Lähmung / Taubheit","Lähmung bzw. Taubheitsgefühl"],"Sprachstörung","Sehstörung","Verwirrtheit","Fieber","Herzrasen","Husten","Blutung","Durchfall",
+      ["Hautausschlag / Juckreiz","Hautausschlag bzw. Juckreiz"],["Schwellung Gesicht / Rachen","Schwellung im Gesicht- bzw. Rachenbereich"],["Extremitäten","Extremitäten",0,"p",0,"Extremitätenschmerzen"],["Unruhe / Angst","Unruhe bzw. Angst"],
+      ["Nacken","Nacken",0,"p",0,"Nackenschmerzen"],["Flanke","Flanken",0,"p",0,"Flankenschmerzen"],["Becken / Hüfte","Hüft",0,"p",0,"Hüftschmerzen"]]},
+  {l:"Beginn", m:"single", silent:true, o:[["Plötzlich","plötzlich einsetzend"],["Langsam zunehmend","langsam zunehmend"]]},
+  {l:"Seit", m:"single", silent:true, o:[["Minuten","einigen Minuten"],["Stunden","einigen Stunden"],["Tagen","mehreren Tagen"]]},
+  {l:"Seit (Datum / Uhrzeit)", m:"datetime", silent:true}
+ ], lead:si=>{
+   const sy=symParts(si); if(!sy.length)return "";
+   const who=pick(si,0)||"Der Patient";
+   const since=sinceText();
+   const how=pick(si,2);
+   return who+" klagt"+(since?" seit "+since:"")+" über "+list(sy)+(how?", "+how:"")+".";
+ }}
 ];
 S.forEach(s=>s.g.forEach(g=>{if(g.o)g.o=g.o.map(o=>Array.isArray(o)?o:[o,o])}));
+// Anzeige- und Textreihenfolge der Abschnitte (Beschwerden direkt nach der Auffindesituation)
+const ORDER=[0,1,9,2,3,4,5,6,7,8];
 
 // ---------- Zustand ----------
-let st={sel:{},txt:{},meds:[],extra:"",paras:true};
+let st={sel:{},txt:{},meds:[],q:{},dx:"",dxT:"",ab:{},cat:{},extra:"",paras:true};
 const EXAMPLE={sel:{"0-0":[0],"1-0":[0],"1-1":[2],"1-2":[0],"2-0":[0],"2-3":[1],
  "4-0":[0],"4-1":[0],"4-2":[0],"4-3":[0],"4-4":[0],"4-5":[0],"4-6":[0],"4-7":[0],"4-8":[0],"4-9":[1],"4-10":[0],"4-11":[0],"4-12":[0],"4-14":[0],"4-15":[0],"4-18":[0],"4-19":[0],"4-20":[6],
- "5-0":[0,2],"5-1":[0],"5-2":[0],"5-3":[0,1],"5-4":[0],"5-5":[0],
+ "9-1":[0,2],"9-2":[0],"9-3":[1],"5-1":[0],"5-2":[0],"5-3":[0,1],"5-4":[0],
  "6-3":[0],"6-5":[1],"6-6":[2],"6-7":[1],"6-9":[0],"6-13":[0],
  "7-0":[0],"7-1":[1],"7-2":[1],"7-3":[0],"7-4":[0],"7-5":[1],"7-6":[0],"8-0":[0]},
  txt:{},meds:[{n:"Acetylsalicylsäure",d:"250",u:"mg",r:"i.v.",t:false},{n:"Morphin",d:"3",u:"mg",r:"i.v.",t:true}],extra:"",paras:true};
@@ -276,13 +427,51 @@ function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}
 // ---------- Textlogik ----------
 const sel=k=>st.sel[k]||[];
 const visible=c=>{if(!c)return true;const [a,b]=c.k.split("-").map(Number);return gVis(a,b)&&sel(c.k).some(x=>c.i.includes(x))};
-function gVis(si,gi){return visible(S[si].g[gi].show)}
-function pick(si,gi){const i=sel(si+"-"+gi)[0];return i==null?"":S[si].g[gi].o[i][1]}
+function gOk(g){return !g.hide&&visible(g.show)&&(!g.cond||g.cond())}
+function gVis(si,gi){return gOk(S[si].g[gi])}
+// Symptome als Textteile: Schmerzen zusammengesetzt ("Kopf- und Brustschmerzen"), dann übrige Symptome alphabetisch
+function symParts(si){
+  const g=S[si].g[1],cur=sel(si+"-1"),out=[];
+  const pk=g.porder.filter(i=>cur.includes(i)).map(i=>g.o[i][1]);
+  if(pk.length)out.push(pk.length===1?pk[0]+"schmerzen":pk.slice(0,-1).map(x=>x+"-").join(", ")+" und "+pk[pk.length-1]+"schmerzen");
+  else if(st.cat&&st.cat[si+"-1:p"])out.push("Schmerzen");
+  cur.filter(i=>!g.o[i][3]&&!g.o[i][4]).sort((a,b)=>g.o[a][0].localeCompare(g.o[b][0],"de")).forEach(i=>out.push(g.o[i][1]));
+  const own=((st.txt||{})[si+"-1:own"]||"").trim(); if(own)out.push(own);
+  return out;
+}
+// Symptombeginn: Datum/Uhrzeit aus dem Auswahlfenster, sonst Schnellauswahl "Seit"
+function sinceText(){
+  const v=((st.txt||{})["9-4"]||"").trim(); if(!v)return pick(9,3);
+  const m=v.match(/^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)/); if(!m)return v.replace(/^seit\s+/i,"").replace(/[.]$/,"");
+  const d=new Date(+m[1],m[2]-1,+m[3]),t=new Date(); t.setHours(0,0,0,0);
+  const diff=Math.round((t-d)/864e5), hm=m[4]+":"+m[5]+" Uhr";
+  return diff===0?hm:diff===1?"gestern "+hm:"dem "+m[3]+"."+m[2]+"."+m[1]+" "+hm;
+}
+// Sturzereignis als Text (Primary Assessment, nur bei Trauma)
+function sturzText(){
+  const v=k=>{const g=S[2].g[k],i=sel("2-"+k)[0];return gVis(2,k)&&i!=null?i:null};
+  if(v(4)==null)return ""; if(v(4)===1)return "Kein Sturzereignis.";
+  const out=[], art=v(5)!=null?S[2].g[5].o[v(5)][1]:"";
+  out.push(art?art+".":"Sturzereignis.");
+  const w=v(6),m=v(7),p=[];
+  if(w===0)p.push("Pat. war durchgehend wach"); if(w===1)p.push("Pat. war nicht durchgehend wach");
+  if(m===0)p.push("Erinnerung an das Ereignis vorhanden"); if(m===1)p.push("keine Erinnerung an das Ereignis");
+  if(p.length){let t=p.join(", ");out.push(t[0].toUpperCase()+t.slice(1)+".")}
+  const kopf=v(8); if(kopf!=null)out.push(["Kopfanprall.","Kein Kopfanprall.","Kopfanprall nicht auszuschließen."][kopf]);
+  const ak=v(9);
+  if(ak===0){const g=S[2].g[10],l=sel("2-10").map(i=>g.o[i][1]),own=((st.txt||{})["2-10:own"]||"").trim(); if(own)l.push(own);
+    out.push(l.length?"Antikoagulation mit "+list(l)+".":"Pat. ist antikoaguliert.")}
+  if(ak===1)out.push("Keine Antikoagulation.");
+  return out.join(" ");
+}
+// NRS aus dem Secondary Assessment (E)
+function nrsVor(){const i=gVis(4,20)?sel("4-20")[0]:null;return i==null?null:i}
+function pick(si,gi){const g=S[si].g[gi],i=sel(si+"-"+gi)[0];return i==null||(g.oif&&!g.oif(i))?"":g.o[i][1]}
 function list(a){return a.length<2?a.join(""):a.slice(0,-1).join(", ")+" und "+a[a.length-1]}
 // frag=true: ohne Satzpunkt (für Listen)
 function groupText(si,gi,frag){
   const g=S[si].g[gi],k=si+"-"+gi;
-  if(!visible(g.show))return "";
+  if(!gOk(g))return "";
   if(g.fn){let x=g.fn(si)||""; if(x&&!frag&&!/[.!?]$/.test(x))x+="."; return x}
   if(g.m==="text"){const v=(st.txt[k]||"").trim();if(!v)return "";return frag?v.replace(/[.]$/,""):(/[.!?]$/.test(v)?v:v+".")}
   const idx=sel(k); if(!idx.length)return "";
@@ -306,18 +495,32 @@ function listLines(si){
 function stuLines(si){
   const s=S[si],pos=[],neg=[];
   s.g.forEach((g,gi)=>{
-    const idx=sel(si+"-"+gi); if(!idx.length)return;
-    const f=idx.filter(i=>!g.o[i][2]).map(i=>g.o[i][1]);
-    if(f.length)pos.push(g.r+": "+f.join(", ")); else neg.push(g.r);
+    const k=si+"-"+gi, idx=sel(k);
+    const catOn=(g.cats||[]).some(c=>st.cat&&st.cat[k+":"+c.id]);
+    if(!idx.length&&!catOn&&!(st.ab&&st.ab[k]))return;
+    const f=[];
+    const catTxt=c=>{const ch=idx.filter(i=>g.o[i][3]===c.id).map(i=>g.o[i][1]); if(ch.length)f.push(c.t+" ("+ch.join(", ")+")"); else if(st.cat&&st.cat[k+":"+c.id])f.push(c.t)};
+    const C=id=>g.cats.find(c=>c.id===id);
+    if(g.lay){
+      const item=x=>{if(typeof x==="string")catTxt(C(x)); else if(typeof x==="number"){if(idx.includes(x))f.push(g.o[x][1])} else if(x.row)x.row.forEach(item); else if(x.yn!=null){if(idx.includes(x.yn))f.push(g.o[x.yn][1]); else catTxt(C(x.no))}};
+      g.lay.forEach(item);
+    } else {
+      (g.cats||[]).forEach(catTxt);
+      idx.filter(i=>!g.o[i][2]&&!g.o[i][3]&&!g.o[i][4]).forEach(i=>f.push(g.o[i][1]));
+    }
+    if(f.length)pos.push(g.r+": "+f.join(", ")); else if(st.ab&&st.ab[k])pos.push(g.r+": auffällig"); else neg.push(g.r);
   });
   const out=[...pos]; if(neg.length)out.push(list(neg)+" ohne Befund");
   return out;
 }
 function secText(si){
-  const s=S[si]; if(!visible(s.show))return "";
+  const s=S[si]; if(si===5&&st.docyou)return "SAMPLER siehe weiteres Protokoll"; if(!visible(s.show))return "";
   if(s.list||s.stu){
-    const lines=s.list?listLines(si):stuLines(si); if(!lines.length)return "";
+    let lines=s.list?listLines(si):stuLines(si);
     const head=s.list?s.list.head:"STU";
+    if(si===6){const m=lines.filter(l=>!l.startsWith("Verlauf: ")),v=lines.filter(l=>l.startsWith("Verlauf: "));
+      if(!m.length)return st.paras?["Maßnahmen: Keine",...v].join("\n"):["Maßnahmen: Keine",...v].join("; ")+".";}
+    if(!lines.length)return "";
     return st.paras?head+":\n"+lines.join("\n"):head+": "+lines.join("; ")+".";
   }
   const t=[]; if(s.lead){const x=s.lead(si); if(x)t.push(x)}
@@ -326,19 +529,300 @@ function secText(si){
 }
 function build(){
   const main=[],tail=[];
-  S.forEach((s,si)=>{const x=secText(si); if(x)(s.end?tail:main).push(x)});
+  ORDER.forEach(si=>{const s=S[si],x=secText(si); if(x)(s.end?tail:main).push(x)});
   const all=main.concat(tail); if(st.extra.trim())all.push(st.extra.trim());
   return all.join(st.paras?"\n\n":" ");
 }
 
+
+// ---------- Verdachtsdiagnosen ----------
+// Jede Regel: [Abschnitt-Gruppe, [Optionsindizes], Gewicht]. Negative Gewichte sprechen dagegen.
+// BPR-Seiten laut Gemeinsamem Kompendium Rettungsdienst 2026.
+const BEW=[1,2,3,4]; // Bewusstsein gestört
+const DDX=[
+ {n:"Akutes Koronarsyndrom (ACS)", r:"BPR ACS, S. 118", c:[["9-1",[0],3],["4-10",[6],4],["4-10",[7],2],["4-4",[1],1],["9-1",[2],1],["9-1",[1],1],["5-3",[0],2],["5-3",[1,2],1],["5-7",[0],1],["9-2",[0],1]]},
+ {n:"Akutes Aortensyndrom", r:"BPR Akutes Aortensyndrom, S. 117", c:[["9-1",[0],2],["9-1",[4],1],["9-2",[0],2],["5-3",[1],2],["4-20",[7,8,9,10],1],["4-4",[1,2],1],["9-1",[9],2]]},
+ {n:"Lungenarterienembolie", r:"BPR Lungenarterienembolie, S. 149", c:[["4-21",[1],1],["9-1",[1],2],["9-1",[0],1],["4-2",[1],1],["4-7",[1],1],["4-10",[1],1],["5-7",[2],2],["9-2",[0],1],["9-1",[18],0]]},
+ {n:"Bronchialobstruktion (Asthma / COPD)", r:"BPR Bronchialobstruktion, S. 128", c:[["4-3",[1],4],["9-1",[1],2],["4-2",[1],1],["5-3",[3],2],["5-7",[0],1],["4-3",[0],-2],["9-1",[18],1]]},
+ {n:"Kardiales Lungenödem", r:"BPR Kardiales Lungenödem, S. 143", c:[["4-21",[1],2],["4-3",[2],4],["9-1",[1],2],["4-2",[1],1],["5-3",[0],1],["5-3",[1],1],["4-4",[1],1],["4-3",[0],-2]]},
+ {n:"Pneumonie", r:"BPR Leitsymptom Dyspnoe, S. 103", c:[["4-19",[1],3],["4-3",[2],2],["4-3",[3],1],["9-1",[1],1],["9-3",[2],1],["4-19",[0],-1],["9-1",[16],2],["9-1",[18],2]]},
+ {n:"Pneumothorax", r:"SAA Thoraxentlastungspunktion, S. 39", c:[["4-21",[1],2],["4-3",[3],3],["3-1",[1,2,3],2],["9-1",[1],1],["9-2",[0],1],["4-3",[0],-2]]},
+ {n:"Anaphylaxie", r:"BPR Anaphylaxie, S. 121", c:[["4-1",[1],2],["4-3",[1],1],["5-1",[1],1],["4-2",[1],1],["4-7",[1],1],["4-4",[1,2],1],["9-2",[0],1],["9-1",[21],3],["9-1",[22],3]]},
+ {n:"Hypoglykämie", r:"BPR Hypoglykämie, S. 138", c:[["4-14",[1],6],["5-3",[2],1],["4-11",BEW,1],["4-4",[1],1],["4-14",[0],-6],["9-1",[15],1],["9-1",[24],1]]},
+ {n:"Hyperglykämie", r:"BPR Hyperglykämie, S. 135", c:[["4-14",[2],6],["5-3",[2],1],["4-11",BEW,1],["9-3",[2],1],["4-14",[0],-6]]},
+ {n:"Schlaganfall", r:"BPR Schlaganfall, S. 152", c:[["4-15",[1],5],["4-13",[0],1],["5-3",[4],2],["4-10",[3],1],["5-3",[5],1],["5-3",[1],1],["9-2",[0],1],["9-1",[3],1],["9-1",[5],1],["4-15",[0],-3],["9-1",[12],2],["9-1",[13],3],["9-1",[14],1]]},
+ {n:"SHT / intrakranielle Blutung", r:"BPR Trauma, S. 157", c:[["2-8",[0],3],["2-8",[2],1],["2-6",[1],2],["2-7",[1],2],["2-9",[0],1],["3-0",[1],3],["4-13",[0],2],["4-11",BEW,1],["9-1",[5],1],["9-1",[2],1],["9-1",[8],1]]},
+ {n:"Krampfanfall (postiktal)", r:"BPR Krampfanfall, S. 145", c:[["4-11",[1,2],2],["5-3",[5],1],["5-7",[3],1],["9-2",[0],1],["9-1",[11],4]]},
+ {n:"Synkope", r:"BPR Kurzzeitige Bewusstlosigkeit, S. 104", c:[["2-5",[2],4],["9-1",[3],2],["9-1",[7],1],["9-2",[0],1],["4-7",[2],1],["4-10",[4],2],["4-10",[2],1],["9-1",[10],3]]},
+ {n:"Instabile Bradykardie", r:"BPR Instabile Bradykardie, S. 140", c:[["4-7",[2],3],["4-10",[4],3],["4-10",[2],2],["9-1",[3],1],["4-4",[1,2],1],["4-11",BEW,1]]},
+ {n:"Tachykarde Herzrhythmusstörung", r:"BPR Instabile Tachykardie, S. 141", c:[["4-10",[10],5],["4-10",[3],2],["4-7",[1],2],["4-6",[1],1],["9-1",[3],1],["9-1",[0],1],["5-3",[4],1],["9-1",[17],3]]},
+ {n:"Hypertensiver Notfall", r:"BPR Hypertensiver Notfall, S. 136", c:[["5-3",[1],2],["9-1",[5],2],["9-1",[3],1],["9-1",[2],1],["9-1",[1],1],["9-1",[14],1]]},
+ {n:"Sepsis", r:"BPR Sepsis, S. 154", c:[["4-19",[1],3],["4-19",[2],1],["4-7",[1],2],["4-11",[1],1],["4-2",[1],1],["4-4",[1,2],1],["9-3",[2],1],["0-0",[1],1],["4-19",[0],-1],["9-1",[16],3],["9-1",[15],1]]},
+ {n:"Schock / Blutung / Hypovolämie", r:"BPR Leitsymptom Schock, S. 113", c:[["4-0",[1],3],["2-1",[0],2],["4-4",[2],2],["4-5",[1,2],2],["4-7",[1],1],["3-3",[1],2],["3-2",[1],1],["4-4",[1],1],["9-1",[19],3]]},
+ {n:"Akutes Abdomen", r:"BPR Leitsymptom Schmerzen, S. 105", c:[["9-1",[4],4],["9-1",[2],1],["3-2",[1],2],["9-1",[8],1],["9-1",[20],1]]},
+ {n:"Dehydratation", r:"BPR Dehydratation, S. 131", c:[["9-1",[6],2],["9-3",[2],1],["0-0",[1],1],["9-1",[3],1],["4-7",[1],1],["5-3",[6],1],["4-19",[1],1],["9-1",[8],1],["9-1",[20],2]]},
+ {n:"Intoxikation", r:"BPR Intoxikation, S. 142", c:[["5-7",[3],2],["4-13",[4],2],["4-13",[5],2],["4-11",BEW,1],["4-2",[2],1],["9-1",[15],1]]},
+ {n:"Hitzeschaden", r:"BPR Hitzeschäden, S. 134", c:[["4-19",[1],2],["4-11",BEW,1],["9-1",[5],1],["9-1",[2],1]]},
+ {n:"Hypothermie", r:"kein eigener BPR", c:[["4-19",[2],4],["4-11",BEW,1],["1-1",[1],1],["5-7",[3],1]]},
+ {n:"Polytrauma / Schwerverletzte", r:"BPR Trauma, S. 157", c:[["2-3",[0],1],["2-0",[2],2],["3-1",[1],3],["3-3",[1],3],["3-5",[2],2]]},
+ {n:"Beckenverletzung", r:"SAA Beckenschlinge, S. 37", c:[["3-3",[1],4],["3-3",[2],2]]},
+ {n:"Wirbelsäulenverletzung", r:"SAA Achsengerechte Immobilisation, S. 38", c:[["3-5",[2],4],["3-5",[1],2],["3-0",[2],2],["9-1",[12],1]]},
+ {n:"Extremitätenfraktur", r:"BPR Trauma, S. 157", c:[["2-5",[1],1],["3-4",[4,5],4],["3-4",[6,7,8],2],["3-4",[1],4],["3-4",[10,11,12],1],["3-4",[14,15,16,17,18],1],["9-1",[23],1]]},
+ {n:"Akuter arterieller Verschluss", r:"BPR Arterieller Verschluss, S. 125", c:[["3-4",[10],2],["5-3",[4],2],["4-10",[3],1],["9-2",[0],1],["9-1",[23],2]]}
+];
+function active(k){const [si,gi]=k.split("-").map(Number),g=S[si].g[gi];return visible(S[si].show)&&!(si===5&&st.docyou)&&gVis(si,gi)?sel(k).filter(i=>!g.oif||g.oif(i)):[]}
+const DIDS=["acs","aorta","lae","obstr","oedem","pneu","ptx","ana","hypo","hyper","stroke","sht","krampf","synk","brady","tachy","hyp","sepsis","schock","abd","dehyd","intox","hitze","hypoth","poly","becken","ws","fraktur","arter"];
+DDX.forEach((d,i)=>d.id=DIDS[i]);
+// Gezielte Fragen: y = Gewicht bei "Ja", n = Gewicht bei "Nein", f = Kurzlabel für "Passende Befunde"
+const QS=[
+ {id:"ausstr",t:"Brustschmerz drückend oder engend, ausstrahlend in Arm, Kiefer oder Oberbauch?",f:"typischer Thoraxschmerz",y:{acs:3},n:{acs:-1}},
+ {id:"reiss",t:"Schmerz reißend oder wandernd, zwischen die Schulterblätter ziehend?",f:"reißender Schmerz",y:{aorta:4,acs:-1}},
+ {id:"rrdiff",t:"Blutdruckdifferenz zwischen beiden Armen (> 20 mmHg) oder Pulsdefizit?",f:"RR-Differenz / Pulsdefizit",y:{aorta:4}},
+ {id:"atemabh",t:"Schmerz atemabhängig, lageabhängig oder durch Druck auslösbar?",f:"atemabhängiger Schmerz",y:{acs:-2,lae:1,ptx:1,pneu:1}},
+ {id:"bein",t:"Einseitige Beinschwellung oder Wadenschmerz?",f:"einseitige Beinschwellung",y:{lae:3}},
+ {id:"thrombrf",t:"Kürzliche OP, Immobilisation, lange Reise, Hormoneinnahme oder Tumorleiden?",f:"Thromboserisiko",y:{lae:2}},
+ {id:"thrombalt",t:"Frühere Thrombose oder Lungenembolie?",f:"Z. n. Thrombose / LAE",y:{lae:2}},
+ {id:"haemopt",t:"Bluthusten (Hämoptysen)?",f:"Hämoptysen",y:{lae:1,pneu:1}},
+ {id:"asthma",t:"Asthma bekannt oder eigenes Notfallspray vorhanden?",f:"Asthma bekannt",y:{obstr:2,ana:1}},
+ {id:"exsp",t:"Verlängertes Exspirium oder Atmung mit Lippenbremse?",f:"verlängertes Exspirium",y:{obstr:3}},
+ {id:"hi",t:"Herzinsuffizienz bekannt?",f:"Herzinsuffizienz",y:{oedem:3}},
+ {id:"orthop",t:"Atemnot im Liegen stärker, Pat. möchte aufrecht sitzen (Orthopnoe)?",f:"Orthopnoe",y:{oedem:2,obstr:1}},
+ {id:"oedeme",t:"Beidseitige Beinödeme oder Gewichtszunahme in letzter Zeit?",f:"Beinödeme bds.",y:{oedem:2}},
+ {id:"husten",t:"Husten mit Auswurf?",f:"produktiver Husten",y:{pneu:2,obstr:1}},
+ {id:"fieber",t:"Fieber oder Schüttelfrost in den letzten Tagen?",f:"Fieber / Schüttelfrost",y:{pneu:2,sepsis:2},n:{sepsis:-1}},
+ {id:"agseit",t:"Einseitig fehlendes Atemgeräusch oder asymmetrische Thoraxbewegung?",f:"einseitig fehlendes AG",y:{ptx:4},n:{ptx:-2}},
+ {id:"halsv",t:"Gestaute Halsvenen?",f:"Halsvenenstauung",y:{ptx:1,lae:1,oedem:1}},
+ {id:"allergen",t:"Kontakt mit möglichem Allergen kurz vor Beginn (Insektenstich, Nahrung, Medikament)?",f:"Allergenkontakt",y:{ana:4},n:{ana:-2}},
+ {id:"haut",t:"Hautausschlag, Quaddeln oder Juckreiz?",f:"Urtikaria / Juckreiz",y:{ana:3}},
+ {id:"angio",t:"Schwellung von Lippen, Zunge oder Rachen?",f:"Angioödem",y:{ana:3}},
+ {id:"stridor",t:"Stridor oder Heiserkeit?",f:"Stridor",y:{ana:2}},
+ {id:"insulin",t:"Insulin oder orale Antidiabetika?",f:"Antidiabetika",y:{hypo:2,hyper:1}},
+ {id:"mahlz",t:"Mahlzeit ausgelassen oder ungewohnte körperliche Belastung?",f:"Mahlzeit ausgelassen",y:{hypo:2}},
+ {id:"durst",t:"Viel Durst, häufiges Wasserlassen oder Acetongeruch?",f:"Polyurie / Acetongeruch",y:{hyper:3,dehyd:1}},
+ {id:"vernicht",t:"Plötzlich stärkster Kopfschmerz des Lebens?",f:"Vernichtungskopfschmerz",y:{sht:3,stroke:2,hyp:1}},
+ {id:"menin",t:"Nackensteifigkeit (Meningismus)?",f:"Meningismus",y:{sepsis:2,sht:1}},
+ {id:"antikoag",t:"Gerinnungshemmer (z. B. Marcumar, DOAK, Heparin)?",f:"Antikoagulation",y:{sht:2,stroke:1,schock:1}},
+ {id:"lsw",t:"Symptombeginn bzw. Last Seen Well vor weniger als 24 Stunden?",f:"Beginn < 24 h",y:{stroke:1}},
+ {id:"kribbel",t:"Kribbeln, Taubheit oder Lähmung in Armen oder Beinen?",f:"sensomotorisches Defizit",y:{ws:2,stroke:2}},
+ {id:"kopftr",t:"Sturz oder Schlag auf den Kopf?",f:"Kopfanprall",y:{sht:3}},
+ {id:"amnes",t:"Bewusstlosigkeit oder Erinnerungslücke rund um das Ereignis?",f:"Amnesie / Bewusstlosigkeit",y:{sht:2,synk:1,krampf:1}},
+ {id:"zunge",t:"Seitlicher Zungenbiss oder Einnässen?",f:"Zungenbiss / Einnässen",y:{krampf:4,synk:-1}},
+ {id:"zuck",t:"Zeugen haben Zuckungen oder Verkrampfen beobachtet?",f:"Zuckungen beobachtet",y:{krampf:3}},
+ {id:"epi",t:"Epilepsie bekannt?",f:"Epilepsie bekannt",y:{krampf:3}},
+ {id:"prodrom",t:"Vorher Schwarzwerden vor Augen, Schwitzen oder Übelkeit?",f:"Prodromi",y:{synk:3,krampf:-1}},
+ {id:"erhol",t:"Rasche und vollständige Erholung innerhalb von 1–2 Minuten?",f:"rasche Erholung",y:{synk:2,krampf:-2}},
+ {id:"belast",t:"Ereignis unter Belastung oder im Liegen?",f:"Ereignis unter Belastung",y:{brady:1,tachy:1,lae:1,acs:1}},
+ {id:"palp",t:"Herzrasen oder Herzstolpern vor dem Ereignis?",f:"Palpitationen",y:{tachy:3,synk:1}},
+ {id:"bbloc",t:"Betablocker, Digitalis oder andere frequenzsenkende Medikamente?",f:"frequenzsenkende Medikation",y:{brady:2,intox:1}},
+ {id:"hsm",t:"Herzschrittmacher oder Defibrillator implantiert?",f:"Schrittmacher / ICD",y:{brady:1,tachy:1}},
+ {id:"rrhoch",t:"Blutdruck systolisch über 180 oder diastolisch über 120 mmHg?",f:"RR > 180/120",y:{hyp:4,aorta:1,oedem:1,stroke:1},n:{hyp:-2}},
+ {id:"rrtief",t:"Blutdruck systolisch 100 mmHg oder niedriger?",f:"RR sys ≤ 100",y:{schock:2,sepsis:1,ana:1},n:{schock:-1}},
+ {id:"si",t:"Puls höher als der systolische Blutdruck (Schockindex > 1)?",f:"Schockindex > 1",y:{schock:3,sepsis:1,lae:1}},
+ {id:"af22",t:"Atemfrequenz 22/min oder mehr?",f:"AF ≥ 22/min",y:{sepsis:1,lae:1,pneu:1,oedem:1}},
+ {id:"infekt",t:"Bekannter Infekt (Harnweg, Lunge, Wunde, Katheter)?",f:"bekannter Infektfokus",y:{sepsis:3,pneu:1}},
+ {id:"immun",t:"Immunschwäche, Chemotherapie oder Dauerkatheter?",f:"Immunsuppression",y:{sepsis:2}},
+ {id:"blut",t:"Sichtbarer oder vermuteter Blutverlust (Teerstuhl, Bluterbrechen, Verletzung)?",f:"Blutverlust",y:{schock:4}},
+ {id:"lokal",t:"Bauchschmerz klar lokalisiert (z. B. rechter Unterbauch, Flanke)?",f:"lokalisierter Bauchschmerz",y:{abd:2}},
+ {id:"erbr",t:"Erbrechen, Durchfall oder Stuhlverhalt?",f:"Erbrechen / Durchfall",y:{abd:1,dehyd:2}},
+ {id:"ss",t:"Schwangerschaft möglich?",f:"Schwangerschaft möglich",y:{abd:2,schock:1,lae:1}},
+ {id:"trinken",t:"Wenig getrunken oder weniger Urin in den letzten Tagen?",f:"geringe Trinkmenge",y:{dehyd:3}},
+ {id:"falte",t:"Stehende Hautfalten oder trockene Schleimhäute?",f:"stehende Hautfalten",y:{dehyd:3}},
+ {id:"substanz",t:"Hinweise auf Medikamente, Drogen, Alkohol oder Chemikalien am Einsatzort?",f:"Substanzhinweis",y:{intox:4}},
+ {id:"co",t:"Mehrere Personen betroffen oder Brandrauch, Heizung, Shisha (CO)?",f:"CO-Verdacht",y:{intox:3}},
+ {id:"opioid",t:"Atemdepression mit stecknadelkopfgroßen Pupillen?",f:"Opioid-Trias",y:{intox:3}},
+ {id:"hitze",t:"Hohe Umgebungstemperatur oder Anstrengung in der Hitze?",f:"Hitzeexposition",y:{hitze:4,dehyd:1},n:{hitze:-2}},
+ {id:"kaelte",t:"Lange Liegezeit oder Kälte- bzw. Nässeexposition?",f:"Kälteexposition",y:{hypoth:4},n:{hypoth:-2}},
+ {id:"rasanz",t:"Hochrasanztrauma (Sturz > 3 m, Verkehrsunfall mit hoher Geschwindigkeit, Einklemmung)?",f:"Hochrasanztrauma",y:{poly:4,ws:1,becken:1},n:{poly:-1}},
+ {id:"huefte",t:"Bein verkürzt und außenrotiert, Leisten- oder Hüftschmerz?",f:"Bein verkürzt / außenrotiert",y:{fraktur:3,becken:1}},
+ {id:"pulslos",t:"Extremität plötzlich kalt, blass und pulslos?",f:"pulslose Extremität",y:{arter:5}}
+];
+function scoreAll(){
+  const q=st.q||{};
+  return DDX.map(d=>{let sc=0;const hit=[];
+    d.c.forEach(([k,idx,w])=>{const a=active(k).filter(i=>idx.includes(i)); if(!a.length)return; sc+=w;
+      if(w>0){const [si,gi]=k.split("-").map(Number);a.forEach(i=>hit.push(S[si].g[gi].o[i][5]||S[si].g[gi].o[i][0]))}});
+    QS.forEach(x=>{const w=q[x.id]===1?(x.y||{})[d.id]:q[x.id]===0?(x.n||{})[d.id]:0; if(!w)return; sc+=w; if(w>0)hit.push(x.f)});
+    return {id:d.id,n:d.n,r:d.r,sc,hit};
+  }).sort((a,b)=>b.sc-a.sc);
+}
+function ddx(){return scoreAll().filter(d=>d.sc>=3&&d.hit.length).slice(0,8)}
+// Fragen auswählen, die die aktuell führenden Verdachtsdiagnosen am stärksten verschieben
+function pickQs(max=6){
+  const all=scoreAll(), q=st.q||{};
+  let top=all.filter(d=>d.sc>=2).slice(0,5); if(!top.length)top=all.filter(d=>d.sc>0).slice(0,5);
+  if(!top.length)return [];
+  const fac=top.map(d=>d.sc/top[0].sc);
+  return QS.filter(x=>q[x.id]==null).map(x=>{let r=0,cov=0;
+      top.forEach((d,i)=>{const w=Math.abs((x.y||{})[d.id]||0)+Math.abs((x.n||{})[d.id]||0); if(w){r+=w*fac[i];cov++}});
+      return {x,r:r+(cov>1?.5:0)}})
+    .filter(o=>o.r>0).sort((a,b)=>b.r-a.r).slice(0,max).map(o=>o.x.id);
+}
+let round=[];
+function qView(fresh){
+  if(fresh||!round.length)round=pickQs();
+  const q=st.q||{}, top=ddx().slice(0,4), answered=Object.keys(q).length;
+  const body=document.getElementById("ovBody");
+  const head=`<div class="qtop"><span class="qlbl">Aktuell führend</span>${top.length?top.map(d=>`<span class="qchip">${esc(d.n)}</span>`).join(""):`<span class="qlbl">noch kein Verdacht</span>`}</div>`;
+  if(!round.length){body.innerHTML=head+`<p class="ddxempty">${scoreAll().some(d=>d.sc>0)?"Zu den führenden Verdachtsdiagnosen sind alle Fragen beantwortet.":"Wähle zuerst ein paar Befunde, z. B. Symptome oder Auskultation. Dann kann die App gezielt nachfragen."}</p>${answered?`<button type="button" class="btn" id="qReset">Antworten zurücksetzen (${answered})</button>`:""}`;return}
+  body.innerHTML=head+`<div class="qlist">${round.map(id=>{const x=QS.find(z=>z.id===id),v=q[id];
+    return `<div class="qrow"><p>${esc(x.t)}</p><div class="chips">${[["Ja",1],["Nein",0],["Unklar",-1]].map(([l,a])=>`<button type="button" class="chip" data-q="${id}" data-a="${a}" aria-pressed="${v===a}">${l}</button>`).join("")}</div></div>`}).join("")}</div>
+    <div class="row qfoot"><button type="button" class="btn primary" id="qMore">Weitere Fragen</button>${answered?`<button type="button" class="btn" id="qReset">Zurücksetzen (${answered})</button>`:""}</div>`;
+}
+document.getElementById("ovBody").addEventListener("click",e=>{
+  const b=e.target.closest("[data-q]");
+  if(b){st.q=st.q||{};const a=+b.dataset.a; if(st.q[b.dataset.q]===a)delete st.q[b.dataset.q]; else st.q[b.dataset.q]=a; save(); renderDdx(); qView(false); return}
+  if(e.target.closest("#qMore")){qView(true);document.querySelector(".ovcard").scrollTop=0;return}
+  if(e.target.closest("#qReset")){st.q={};save();renderDdx();qView(true)}
+});
+function dxButtons(b,medsKey,label){
+  const kp=b?`<button type="button" class="mini" data-pdf="komp" data-page="${b.p}" data-title="${esc(b.n)}" title="${esc(b.n)}">Kompendium S. ${b.p}</button>`:`<span class="mini off">kein BPR</span>`;
+  return kp+`<button type="button" class="mini" data-meds="${medsKey}" data-title="${esc(label)}">Medikamente</button>`;
+}
+function renderDdx(){
+  renderOwnDx();
+  const box=document.getElementById("ddx"); if(!box)return;
+  const l=ddx();
+  if(!l.length){box.innerHTML=`<p class="ddxempty">Noch zu wenige Befunde für Vorschläge. Wähle z. B. Symptome, Auskultation oder EKG-Befund.</p>`;return}
+  box.innerHTML=`<div class="ddxwrap"><table class="ddxt"><thead><tr><th>Verdacht</th><th>Passende Befunde</th><th>Nachschlagen</th></tr></thead><tbody>${l.map(d=>{
+    const lv=d.sc>=7?3:d.sc>=5?2:1, lt=["","niedrig","mittel","hoch"][lv], inf=infoFor(d.id);
+    return `<tr><td><span class="lvl l${lv}" title="Übereinstimmung ${lt}" aria-label="Übereinstimmung ${lt}"><i></i><i></i><i></i></span>${esc(d.n)}</td><td>${d.hit.map(esc).join(", ")}</td><td class="ref"><div class="refbtns">${dxButtons(inf.b,"d:"+d.id,d.n)}</div></td></tr>`}).join("")}</tbody></table></div>`;
+}
+function renderOwnDx(){
+  const sel=document.getElementById("ownDx"); if(!sel)return;
+  if(!sel.options.length){
+    const groups={}; Object.entries(BPR).forEach(([k,b])=>(groups[b.g]=groups[b.g]||[]).push([k,b]));
+    sel.innerHTML=`<option value="">Eigene Verdachtsdiagnose wählen …</option>`+Object.entries(groups).map(([g,l])=>`<optgroup label="${esc(g)}">${l.sort((a,b)=>a[1].n.localeCompare(b[1].n,"de")).map(([k,b])=>`<option value="${k}">${esc(b.n)}</option>`).join("")}</optgroup>`).join("")+`<option value="__other">Andere (eintippen)</option>`;
+  }
+  sel.value=st.dx||"";
+  const t=document.getElementById("ownDxText"), act=document.getElementById("ownDxAct");
+  t.hidden=st.dx!=="__other"; if(document.activeElement!==t)t.value=st.dxT||"";
+  const b=BPR[st.dx];
+  act.innerHTML=b?dxButtons(b,"b:"+st.dx,b.n):"";
+}
+
+
+// ---------- Kompendium-Seiten & Begleitheft ----------
+// Seiten = Druckseiten im Gemeinsamen Kompendium Rettungsdienst 2026 (identisch mit PDF-Seite)
+const AN=["Paracetamol","Ibuprofen","Nalbuphin","Morphin","Fentanyl","Esketamin"];
+const BPR={
+ dyspnoe:{g:"Leitsymptome",n:"Leitsymptom Dyspnoe",p:103,m:["Sauerstoff"]},
+ synk:{g:"Leitsymptome",n:"Leitsymptom Kurzzeitige Bewusstlosigkeit",p:104,m:[]},
+ schmerz:{g:"Leitsymptome",n:"Leitsymptom Schmerzen / Schmerzbehandlung",p:105,m:[...AN,"Midazolam","Dimenhydrinat","Ondansetron"]},
+ schock:{g:"Leitsymptome",n:"Leitsymptom Schock",p:113,m:["Vollelektrolytlösung","Sauerstoff"],cave:["Glyceroltrinitrat: keine Anwendung bei Schock oder RRsys < 100 mmHg"]},
+ neuro:{g:"Leitsymptome",n:"Leitsymptom Zentrales neurologisches Defizit",p:114,m:[]},
+ afk:{g:"Krankheitsbilder",n:"A-Problem bei Fremdkörperaspiration",p:115,m:[]},
+ aerw:{g:"Krankheitsbilder",n:"A-Problem beim Erwachsenen",p:116,m:["Sauerstoff"]},
+ aorta:{g:"Krankheitsbilder",n:"Akutes Aortensyndrom",p:117,m:["Urapidil","Morphin","Fentanyl"],cave:["Acetylsalicylsäure: keine Anwendung bei V. a. akutes Aortensyndrom","Heparin: keine Anwendung bei akutem Aortensyndrom","Urapidil: Zielwert RRsys 100–120 mmHg"]},
+ acs:{g:"Krankheitsbilder",n:"ACS",p:118,m:["Acetylsalicylsäure","Heparin","Morphin","Glyceroltrinitrat","Metoprolol","Sauerstoff"],cave:["Esketamin: keine Anwendung bei ACS / Myokardinfarkt","Ibuprofen: keine Anwendung bei ACS","Metoprolol und Glyceroltrinitrat nicht zeitgleich geben (beide blutdrucksenkend)"]},
+ ana:{g:"Krankheitsbilder",n:"Anaphylaxie",p:121,m:["Epinephrin","Dimetinden","Prednisolon","Vollelektrolytlösung","Sauerstoff"]},
+ arter:{g:"Krankheitsbilder",n:"Akuter arterieller Verschluss",p:125,m:["Heparin","Morphin","Fentanyl"]},
+ tracheo:{g:"Krankheitsbilder",n:"Atemnot durch verlegtes Tracheostoma",p:126,m:["Sauerstoff"]},
+ obstr:{g:"Krankheitsbilder",n:"Bronchialobstruktion",p:128,m:["Salbutamol","Ipratropiumbromid","Prednisolon","Sauerstoff"],cave:["Dimenhydrinat: keine Anwendung bei akuter Bronchialobstruktion","Sauerstoff: bei Hyperkapnierisiko (z. B. COPD) Ziel-SpO₂ 88–92 %"]},
+ dehyd:{g:"Krankheitsbilder",n:"Dehydratation",p:131,m:["Vollelektrolytlösung"],cave:["Furosemid: keine Anwendung bei Hypovolämie / schwergradiger Dehydratation","Ibuprofen: keine Anwendung bei schwergradiger Dehydratation"]},
+ geburt:{g:"Krankheitsbilder",n:"Geburtsbegleitung",p:132,m:[]},
+ hitze:{g:"Krankheitsbilder",n:"Hitzeschäden",p:134,m:["Vollelektrolytlösung"]},
+ hyper:{g:"Krankheitsbilder",n:"Hyperglykämie",p:135,m:["Vollelektrolytlösung"]},
+ hyp:{g:"Krankheitsbilder",n:"Hypertensiver Notfall",p:136,m:["Urapidil","Glyceroltrinitrat"]},
+ hypo:{g:"Krankheitsbilder",n:"Hypoglykämie",p:138,m:["Glucose","Glucagon"]},
+ brady:{g:"Krankheitsbilder",n:"Instabile Bradykardie",p:140,m:["Atropin","Epinephrin"],cave:["Metoprolol: keine Anwendung bei Bradykardie < 60/min oder AV-Block II°/III°"]},
+ tachy:{g:"Krankheitsbilder",n:"Instabile Tachykardie",p:141,m:["Amiodaron","Metoprolol"],cave:["Salbutamol, Ipratropiumbromid: keine Anwendung bei symptomatischer Tachykardie / Tachyarrhythmie","Butylscopolamin: keine Anwendung bei Tachykardie / Tachyarrhythmie"]},
+ intox:{g:"Krankheitsbilder",n:"Intoxikation",p:142,m:["Naloxon","Sauerstoff"],cave:["Esketamin und Midazolam (Analgosedierung): keine Anwendung bei Intoxikation mit psychoaktiven Substanzen, Alkohol, Opioiden"]},
+ oedem:{g:"Krankheitsbilder",n:"Kardiales Lungenödem",p:143,m:["Furosemid","Glyceroltrinitrat","Sauerstoff"],nb:68,cave:["Vollelektrolytlösung: keine Anwendung bei kardialer Dekompensation / Lungenödem","Metoprolol: keine Anwendung bei Zeichen akuter Herzinsuffizienz"]},
+ krampf:{g:"Krankheitsbilder",n:"Krampfanfall",p:145,m:["Midazolam","Paracetamol","Ibuprofen"],cave:["Dimenhydrinat: keine Anwendung bei Krampfanfällen","Midazolam: keine Anwendung bei primär hypoxisch bedingtem Krampfanfall","Paracetamol / Ibuprofen hier nur bei Fieber beim Kind nach Krampfanfall"]},
+ lae:{g:"Krankheitsbilder",n:"Lungenarterienembolie",p:149,m:["Heparin","Sauerstoff"],cave:["Tranexamsäure: nur nach Nutzen-Risiko-Abwägung bei LAE"]},
+ okind:{g:"Krankheitsbilder",n:"Obstruktion obere Atemwege – Säugling / Kleinkind",p:151,m:["Epinephrin","Prednisolon"]},
+ stroke:{g:"Krankheitsbilder",n:"Schlaganfall",p:152,m:["Urapidil","Vollelektrolytlösung"],cave:["Heparin: keine Anwendung bei akuter zerebrovaskulärer Erkrankung (V. a. ICB, SAB, Apoplex)","Glyceroltrinitrat: keine Anwendung bei V. a. erhöhten Hirndruck / intrakranielle Blutung","Urapidil: nur moderate Senkung, RRsys nicht unter 180 mmHg"]},
+ sepsis:{g:"Krankheitsbilder",n:"Sepsis",p:154,m:["Vollelektrolytlösung","Sauerstoff"]},
+ trauma:{g:"Trauma, MANV und Sonstiges",n:"Trauma",p:157,m:["Tranexamsäure","Vollelektrolytlösung","Esketamin","Fentanyl","Morphin","Nalbuphin","Midazolam","Sauerstoff"],cave:["Tranexamsäure: nur innerhalb von 3 h nach Trauma, nicht bei isoliertem SHT / ICB","Esketamin: keine Anwendung bei gesteigertem Hirndruck"]},
+ rettung:{g:"Trauma, MANV und Sonstiges",n:"Patientenzentrierte Rettung",p:165,m:[]},
+ mstart:{g:"Trauma, MANV und Sonstiges",n:"mSTART (MANV)",p:167,m:[]},
+ co:{g:"Trauma, MANV und Sonstiges",n:"Intoxikation mit Kohlenstoffmonoxid",p:171,m:["Sauerstoff"],nb:68},
+ reaE:{g:"Reanimation",n:"Reanimation Erwachsene – ALS",p:91,m:["Epinephrin","Amiodaron","Lidocain"]},
+ reaK:{g:"Reanimation",n:"Reanimation Kinder – PLS",p:93,m:["Epinephrin","Amiodaron","Lidocain"]},
+ neo:{g:"Reanimation",n:"Erstversorgung Neugeborener",p:95,m:[]},
+ nls:{g:"Reanimation",n:"Reanimation Neugeborene – NLS",p:97,m:[]},
+ rosc:{g:"Reanimation",n:"Post-ROSC",p:99,m:[],nb:72},
+ ptx:{g:"SAA (Auswahl)",n:"SAA Thoraxentlastungspunktion",p:39,m:["Sauerstoff"],cave:["NIV / CPAP: keine Anwendung bei Spannungspneumothorax"]},
+ tq:{g:"SAA (Auswahl)",n:"SAA Tourniquet / pneumatische Blutsperre",p:36,m:[]},
+ becken:{g:"SAA (Auswahl)",n:"SAA Beckenschlinge",p:37,m:["Tranexamsäure",...AN.slice(2)]},
+ ws:{g:"SAA (Auswahl)",n:"SAA Achsengerechte Immobilisation",p:38,m:[]}
+};
+// Begleitheft Medikamente 2026: Heftseite, Indikation, Dosierung Erwachsene (Wortlaut gekürzt)
+const BH={
+ "Acetylsalicylsäure":[6,"Akutes Koronarsyndrom, Myokardinfarkt","250 mg langsam i.v. oder 200 mg p.o., keine Repetition"],
+ "Amiodaron":[8,"Reanimation (refraktäres Kammerflimmern, pulslose VT), lebensbedrohliche ventrikuläre Tachykardie","Reanimation: 300 mg nach der 3., 150 mg nach der 5. Defibrillation. VT: 300 mg als Kurzinfusion über ca. 20 min"],
+ "Atropin":[10,"Instabile Bradykardie","0,5 mg i.v., Repetition nach 3–5 min, max. Gesamtdosis 3 mg; wenn wirkungslos Wechsel auf Epinephrin"],
+ "Butylscopolamin":[12,"Starke kolikartige abdominelle Schmerzen","0,3 mg/kgKG langsam i.v., Repetition nach 5 min, max. 20 mg"],
+ "Dimenhydrinat":[14,"Übelkeit und Erbrechen","Erwachsene und Kinder > 14 J.: 62 mg langsam i.v."],
+ "Dimetinden":[16,"Anaphylaxie","4–8 mg (0,1 mg/kgKG, max. 8 mg) langsam i.v."],
+ "Epinephrin":[18,"Reanimation, instabile Bradykardie, Anaphylaxie ab Stadium II, Obstruktion der oberen Atemwege","Anaphylaxie: 0,5 mg i.m. · Bradykardie: 5 µg-Boli (1 mg auf 100 ml) · vernebelt: 4 mg · Reanimation: 1 mg i.v./i.o."],
+ "Esketamin":[20,"Starker Schmerz (NRS ≥ 6)","i.v. 0,125 mg/kgKG, Repetition, max. 0,25 mg/kgKG · i.n./i.m. 1 mg/kgKG; i.v. mit Midazolam kombinieren"],
+ "Fentanyl":[22,"Starker Schmerz (NRS ≥ 6)","i.v. in 50 µg-Schritten alle 3–4 min, max. 2 µg/kgKG · i.n./i.m. 2 µg/kgKG"],
+ "Furosemid":[24,"Kardiales Lungenödem","20 mg langsam i.v., einmalige Repetition nach 15 min"],
+ "Glucagon":[26,"Hypoglykämie < 60 mg/dl (Fremdhilfe erforderlich)","1 mg i.m. oder 3 mg i.n."],
+ "Glucose":[28,"Hypoglykämie < 60 mg/dl (Fremdhilfe erforderlich)","8–10 g i.v. mit laufender VEL, max. 20 %ig; wach und schluckfähig: p.o."],
+ "Glyceroltrinitrat":[30,"Kardiales Lungenödem, hypertensiver Notfall mit kardialer Symptomatik, Myokardinfarkt (nicht routinemäßig)","0,4 mg (1 Hub) s.l., einmalige Repetition nach 5 min; vorher sicherer i.v.-Zugang"],
+ "Heparin":[32,"ACS, Lungenarterienembolie, akuter peripherer arterieller Verschluss","5.000 I.E. i.v., keine Repetition"],
+ "Ibuprofen":[34,"Schmerzen NRS ≥ 3, Fieber beim Kind nach Krampfanfall","gewichtsadaptiert laut Tabelle; i.v. 600 mg ab 18 J.; keine Repetition"],
+ "Ipratropiumbromid":[36,"Bronchialobstruktion (Asthma, exazerbierte COPD)","> 12 J.: 0,5 mg inhalativ, Repetition nach 30 min möglich"],
+ "Lidocain":[40,"Reanimation bei Kammerflimmern / pulsloser VT (Alternative zu Amiodaron)","100 mg i.v. nach der 3., 50 mg nach der 5. Defibrillation"],
+ "Metoprolol":[42,"STEMI / OMI mit tachykardem Vorhofflimmern (> 100/min) oder multiplen VES","2 mg i.v., Repetition 2 mg und 1 mg, max. 5 mg"],
+ "Midazolam":[44,"Komplizierter Krampfanfall / Fieberkrampf, Analgosedierung mit Esketamin","Krampfanfall: 10 mg buccal oder nasal bzw. 0,1 mg/kgKG i.v. · Analgosedierung: 1–2 mg langsam i.v."],
+ "Morphin":[46,"Starke und stärkste Schmerzen (NRS ≥ 6)","2 mg fraktioniert langsam i.v. alle 3–4 min, max. 10 mg"],
+ "Nalbuphin":[48,"Starke und stärkste Schmerzen (NRS ≥ 6)","< 65 J.: 0,2 mg/kgKG i.v., ≥ 65 J.: 0,1 mg/kgKG i.v.; max. 20 mg"],
+ "Naloxon":[50,"Opioid-Intoxikation / -Überdosierung bei Versagen der primären Maßnahmen","0,1 mg fraktioniert langsam i.v. alle 2 min bis suffiziente Spontanatmung"],
+ "Ondansetron":[52,"Chemotherapie- oder opiatinduzierte Übelkeit, massives Erbrechen (Off-Label)","4 mg langsam i.v."],
+ "Paracetamol":[54,"Schmerzen NRS ≥ 3, Fieber beim Kind nach Krampfanfall","> 50 kg: 1.000 mg, 15–50 kg: 15 mg/kgKG als Kurzinfusion über 15 min, keine Repetition"],
+ "Prednisolon":[56,"Anaphylaxie, Bronchialobstruktion, Pseudokrupp","Anaphylaxie > 12 J.: 250 mg i.v. · Bronchialobstruktion > 12 J.: 80 mg i.v."],
+ "Salbutamol":[58,"Bronchialobstruktion","> 12 J.: 2,5 mg inhalativ, einmalige Repetition nach 10 min"],
+ "Sauerstoff":[60,"Hypoxämie, CO-Intoxikation, Tauchunfall","Ziel-SpO₂ 92–96 %, bei Hyperkapnierisiko 88–92 %; hochdosiert 15 l/min bei schwerer Atemnot, CO, kritisch krank"],
+ "Tranexamsäure":[62,"Blutung nach schwerem Trauma im hämorrhagischen Schock","15 mg/kgKG als Kurzinfusion über 15 min, max. 1.000 mg; nur innerhalb von 3 h"],
+ "Urapidil":[64,"Hypertensiver Notfall, akutes Aortensyndrom, Schlaganfall","5 mg langsam i.v., Repetition möglich, max. 25 mg"],
+ "Vollelektrolytlösung":[66,"Volumenmangel (Blutung, Dehydratation, Anaphylaxie, Sepsis, Verbrennung, kritische Hyperglykämie), Schlaganfall","> 12 J.: 500–1.000 ml i.v., Repetition möglich"]
+};
+// Zuordnung Verdachtsdiagnose -> Kompendium (und ggf. eigene Medikamentenliste)
+const DMAP={acs:"acs",aorta:"aorta",lae:"lae",obstr:"obstr",oedem:"oedem",pneu:"dyspnoe",ptx:"ptx",ana:"ana",hypo:"hypo",hyper:"hyper",stroke:"stroke",sht:"trauma",krampf:"krampf",synk:"synk",brady:"brady",tachy:"tachy",hyp:"hyp",sepsis:"sepsis",schock:"schock",abd:"schmerz",dehyd:"dehyd",intox:"intox",hitze:"hitze",hypoth:null,poly:"trauma",becken:"becken",ws:"ws",fraktur:"trauma",arter:"arter"};
+const DMEDS={abd:["Butylscopolamin","Paracetamol","Nalbuphin","Morphin","Fentanyl","Dimenhydrinat","Ondansetron"],pneu:["Sauerstoff","Vollelektrolytlösung"],sht:["Sauerstoff",...AN.slice(2)],fraktur:[...AN],
+  hypoth:[]};
+const DCAVE={sht:["Tranexamsäure: bei isoliertem SHT / ICB nicht empfohlen","Esketamin: keine Anwendung bei gesteigertem Hirndruck","Glyceroltrinitrat: keine Anwendung bei V. a. erhöhten Hirndruck"]};
+function infoFor(id){const k=DMAP[id],b=k?BPR[k]:null;return {b,m:DMEDS[id]||(b?b.m:[]),cave:DCAVE[id]||(b?b.cave||[]:[])}}
+
 // ---------- UI ----------
 const root=document.getElementById("sections");
+const ddOpen={};
+document.addEventListener("toggle",e=>{if(e.target.classList&&e.target.classList.contains("dd"))ddOpen[e.target.id]=e.target.open},true);
+const moreOpen={};
+function ddSummary(g,cur,key){
+  const parts=[];
+  if(g.cats&&g.porder){const c=g.cats[0],ch=g.porder.filter(i=>cur.includes(i)).map(i=>g.o[i][0]);
+    if(ch.length)parts.push(c.l+" ("+ch.join(", ")+")"); else if(st.cat&&st.cat[key+":"+c.id])parts.push(c.l)}
+  cur.filter(i=>!g.o[i][3]&&!g.o[i][4]).sort((a,b)=>g.o[a][0].localeCompare(g.o[b][0],"de")).forEach(i=>parts.push(g.o[i][0]));
+  const own=((st.txt||{})[key+":own"]||"").trim(); if(own)parts.push(own);
+  return parts.length?`<span class="ddsel">${parts.map(esc).join(", ")}</span>`:`<span class="ddph">${esc(g.ph||"Auswählen …")}</span>`}
+document.addEventListener("change",e=>{
+  const cb=e.target.closest(".ddcb"); if(!cb)return;
+  const k=cb.dataset.k,i=+cb.dataset.i,[si,gi]=k.split("-").map(Number);
+  let cur=sel(k).filter(x=>x!==i); if(cb.checked)cur.push(i); cur.sort((a,b)=>a-b); st.sel[k]=cur;
+  document.getElementById("exampleNote").hidden=true;
+  const d=document.getElementById("dd-"+k); if(d)d.querySelector("summary").innerHTML=ddSummary(S[si].g[gi],cur,k);
+  update();
+});
+document.addEventListener("change",e=>{
+  const cc=e.target.closest(".ddcat"); if(!cc)return;
+  const [k,id]=cc.dataset.dcat.split("|"),[si,gi]=k.split("-").map(Number),g=S[si].g[gi]; st.cat=st.cat||{};
+  st.cat[k+":"+id]=cc.checked;
+  const sub=document.getElementById("ddsub-"+k); if(sub)sub.hidden=!cc.checked;
+  if(!cc.checked){st.sel[k]=sel(k).filter(i=>g.o[i][3]!==id); if(sub)sub.querySelectorAll("input").forEach(x=>x.checked=false)}
+  document.getElementById("exampleNote").hidden=true;
+  const d=document.getElementById("dd-"+k); if(d)d.querySelector("summary").innerHTML=ddSummary(g,sel(k),k);
+  update();
+});
 const esc=s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
 function render(){
   root.innerHTML=""; let num=0;
-  const order=S.map((s,i)=>i).filter(i=>!S[i].end).concat(S.map((s,i)=>i).filter(i=>S[i].end),["extra"]);
+  const order=ORDER.filter(i=>!S[i].end).concat(ORDER.filter(i=>S[i].end),["extra"]);
   order.forEach(si=>{
-    if(si!=="extra"&&!visible(S[si].show))return;
+    if(si!=="extra"&&(!visible(S[si].show)||(si===5&&st.docyou)))return;
     num++; const n=String(num).padStart(2,"0");
     const sec=document.createElement("section");
     if(si==="extra"){
@@ -346,11 +830,13 @@ function render(){
       root.appendChild(sec); sec.querySelector("textarea").value=st.extra; return;
     }
     const s=S[si]; let lastL=null;
-    sec.innerHTML=`<h2><span class="n">${n}</span>${s.t}</h2>`;
-    s.g.forEach((g,gi)=>{
-      if(!visible(g.show))return;
+    sec.innerHTML=`<h2><span class="n">${n}</span>${s.t}${s.stu?`<button type="button" class="chip allob" data-allob="${si}">Alle o. B.</button>`:""}</h2>`;
+    const LK=s.list?Object.keys(s.list.L):[];
+    s.g.map((g,gi)=>gi).sort((a,b)=>s.list?(LK.indexOf(s.g[a].L)-LK.indexOf(s.g[b].L))||a-b:a-b).forEach(gi=>{const g=s.g[gi];
+      if(!gOk(g))return;
       if(s.list&&g.L!==lastL){const h=document.createElement("div");h.className="letter";h.textContent=s.list.L[g.L];sec.appendChild(h);lastL=g.L}
       const key=si+"-"+gi,cur=sel(key),d=document.createElement("div");d.className="grp";
+      const lblX=g.l==="NRS jetzt"?` (vorher ${nrsVor()})`:"";
       if(g.m==="action"){
         d.innerHTML=`<div class="lbl">${g.l}<small>nicht im Freitext</small></div><div><button type="button" class="btn actbtn" data-act="${g.act}">${g.btn}</button></div>`;
       }else if(g.m==="meds"){
@@ -364,10 +850,40 @@ function render(){
           <span class="dose"><input class="num" id="md-${i}" data-med="${i}" data-f="d" inputmode="decimal" placeholder="Dosis" value="${esc(m.d||"")}" aria-label="Dosis ${i+1}"><select class="medu" id="mu-${i}" data-med="${i}" aria-label="Einheit ${i+1}">${opt(UNITS,m.u||"mg")}</select></span>
           <select class="medr" id="mr-${i}" data-med="${i}" aria-label="Applikationsweg ${i+1}">${opt(routes,m.r||routes[0])}</select>
           <button type="button" class="chip medt" data-med="${i}" aria-pressed="${!!m.t}">titriert</button><button type="button" class="chip medx" data-med="${i}" aria-label="Medikament entfernen">×</button></div>`}).join("")}<button type="button" class="chip medadd">+ Medikament</button></div>`;
+      }else if(g.m==="dropdown"){
+        const cbx=i=>`<label class="ddopt"><input type="checkbox" class="ddcb" data-k="${key}" data-i="${i}"${cur.includes(i)?" checked":""}> ${esc(g.o[i][0])}</label>`;
+        const ent=g.o.map((o,i)=>i).filter(i=>!g.o[i][3]&&!g.o[i][4]).map(i=>({l:g.o[i][0],h:cbx(i)}));
+        (g.cats||[]).forEach(c=>{const on=!!(st.cat&&st.cat[key+":"+c.id])||cur.some(i=>g.o[i][3]===c.id);
+          ent.push({l:c.l,h:`<div class="ddgrp"><label class="ddopt"><input type="checkbox" class="ddcat" data-dcat="${key}|${c.id}"${on?" checked":""}> ${esc(c.l)} …</label><div class="ddsub" id="ddsub-${key}"${on?"":" hidden"}>${g.porder.map(cbx).join("")}</div></div>`})});
+        ent.sort((a,b)=>a.l.localeCompare(b.l,"de"));
+        d.innerHTML=`<div class="lbl">${g.l}<small>mehrfach</small></div><details class="dd" id="dd-${key}"${ddOpen["dd-"+key]?" open":""}><summary>${ddSummary(g,cur,key)}</summary><div class="ddlist">${ent.map(x=>x.h).join("")}${g.own?`<label class="ddown" for="t-${key}-own">Weitere (eigene Eingabe)<input class="txt" id="t-${key}-own" data-t="${key}:own" placeholder="${key==="9-1"?"z. B. Ohrenschmerzen, Zittern":"z. B. anderes Präparat"}" value="${esc(st.txt[key+":own"]||"")}"></label>`:""}<button type="button" class="chip ddclose" data-ddclose="${key}">Fertig</button></div></details>`;
+      }else if(g.m==="datetime"){
+        const v=st.txt[key]||"", iso=/^\d{4}-\d\d-\d\dT\d\d:\d\d/.test(v)?v.slice(0,16):"";
+        d.innerHTML=`<label class="lbl" for="t-${key}">${g.l}<small>überschreibt „Seit“</small></label><div class="dtrow"><input type="datetime-local" class="txt dt" id="t-${key}" data-t="${key}" value="${iso}"><button type="button" class="chip" data-now="${key}">Jetzt</button>${v?`<button type="button" class="chip" data-clr="${key}" aria-label="Datum und Uhrzeit löschen">×</button>`:""}</div>`;
+      }else if(s.stu){
+        const cOn=c=>!!(st.cat&&st.cat[key+":"+c.id])||cur.some(i=>g.o[i][3]===c.id);
+        const ab=!!(st.ab&&st.ab[key])||cur.some(i=>!g.o[i][2])||(g.cats||[]).some(cOn);
+        const chip=i=>`<button type="button" class="chip" data-k="${key}" data-i="${i}" aria-pressed="${cur.includes(i)}">${g.o[i][0]}</button>`;
+        const cats=(g.cats||[]).map(c=>`<div class="stucat"><button type="button" class="chip catbtn" data-cat="${key}|${c.id}" aria-pressed="${cOn(c)}">${c.l}</button>${cOn(c)?`<div class="chips stusub">${g.o.map((o,i)=>i).filter(i=>g.o[i][3]===c.id).map(chip).join("")}</div>`:""}</div>`).join("");
+        const C=id=>g.cats.find(c=>c.id===id);
+        const kids=c=>cOn(c)?`<div class="chips stusub">${g.o.map((o,i)=>i).filter(i=>g.o[i][3]===c.id).map(chip).join("")}</div>`:"";
+        const catBtn=(c,lab)=>`<button type="button" class="chip catbtn" data-cat="${key}|${c.id}" aria-pressed="${cOn(c)}">${lab||c.l}</button>`;
+        let rest=g.o.map((o,i)=>i).filter(i=>!g.o[i][2]&&!g.o[i][3]&&!g.o[i][4]).map(chip).join("");
+        let body=null;
+        if(g.lay){
+          body=g.lay.map(x=>{
+            if(typeof x==="string"){const c=C(x);return `<div class="stucat">${catBtn(c)}${kids(c)}</div>`}
+            if(x.row){const cs=x.row.filter(y=>typeof y==="string").map(C);return `<div class="stucat"><div class="chips">${x.row.map(y=>typeof y==="string"?catBtn(C(y)):chip(y)).join("")}</div>${cs.map(kids).join("")}</div>`}
+            if(x.yn!=null){const c=C(x.no);return `<div class="stucat stuyn"><div class="ynrow"><span class="ynl">${x.l}</span><div class="chips"><button type="button" class="chip" data-k="${key}" data-i="${x.yn}" aria-pressed="${cur.includes(x.yn)}">Ja</button>${catBtn(c,"Nein")}</div></div>${kids(c)}</div>`}
+            return "";}).join("");
+        }
+        d.innerHTML=`<div class="lbl">${g.l}</div><div class="stuwrap"><div class="chips"><button type="button" class="chip" data-k="${key}" data-i="0" aria-pressed="${cur.includes(0)}">o. B.</button><button type="button" class="chip abbtn" data-ab="${key}" aria-pressed="${ab}">Auffällig</button></div>${ab?`<div class="stufind">${body!=null?body:cats+(rest?`<div class="chips">${rest}</div>`:"")}</div>`:""}</div>`;
       }else if(g.m==="text"){
         d.innerHTML=`<label class="lbl" for="t-${key}">${g.l}<small>Freitext</small></label><input class="txt" id="t-${key}" data-t="${key}" placeholder="${esc(g.ph||"")}" value="${esc(st.txt[key]||"")}">`;
       }else{
-        d.innerHTML=`<div class="lbl">${g.l}<small>${g.m==="multi"?"mehrfach":"einfach"}</small></div><div class="chips">${g.o.map((o,i)=>`<button type="button" class="chip" data-k="${key}" data-i="${i}" aria-pressed="${cur.includes(i)}">${o[0]}</button>`).join("")}</div>`;
+        const open=!g.more||!!moreOpen[key];
+        const shown=g.o.map((o,i)=>[o,i]).filter(([o,i])=>(!g.oif||g.oif(i))&&(open||i<g.more||cur.includes(i)));
+        d.innerHTML=`<div class="lbl">${g.l}${lblX}<small>${g.m==="multi"?"mehrfach":"einfach"}</small></div><div class="chips">${shown.map(([o,i])=>`<button type="button" class="chip" data-k="${key}" data-i="${i}" aria-pressed="${cur.includes(i)}">${o[0]}</button>`).join("")}${g.more?`<button type="button" class="chip morebtn" data-more="${key}" aria-expanded="${open}">${open?"Weniger ▴":"Weitere ▾"}</button>`:""}</div>`;
       }
       sec.appendChild(d);
     });
@@ -376,11 +892,12 @@ function render(){
   const hb=document.createElement("button");hb.type="button";hb.className="btn handbtn";hb.id="openHandover";hb.textContent="Übergabe vorbereiten (SINNHAFT)";
   root.appendChild(hb);
   document.getElementById("paras").checked=st.paras;
+  document.getElementById("docyou").checked=!!st.docyou;
   update();
 }
 function update(){
   const t=build(); document.getElementById("out").textContent=t;
-  document.getElementById("count").textContent=t.length+" Zeichen"; save();
+  document.getElementById("count").textContent=t.length+" Zeichen"; save(); renderDdx();
 }
 root.addEventListener("click",e=>{
   const m=e.target.closest(".medt,.medx,.medadd");
@@ -388,6 +905,34 @@ root.addEventListener("click",e=>{
     if(m.classList.contains("medt")){st.meds[i].t=!st.meds[i].t;m.setAttribute("aria-pressed",st.meds[i].t);update();return}
     if(m.classList.contains("medx"))st.meds.splice(i,1); else st.meds.push({n:"",d:"",u:"mg",r:"i.v.",t:false});
     render(); return}
+  const dc=e.target.closest("[data-ddclose]");
+  if(dc){const d=document.getElementById("dd-"+dc.dataset.ddclose); if(d){d.open=false;ddOpen[d.id]=false;d.querySelector("summary").focus()} return}
+  const nw=e.target.closest("[data-now]"),cl=e.target.closest("[data-clr]");
+  if(nw||cl){const k=(nw||cl).dataset.now||(nw||cl).dataset.clr;
+    if(nw){const t=new Date(),p=n=>String(n).padStart(2,"0");st.txt[k]=t.getFullYear()+"-"+p(t.getMonth()+1)+"-"+p(t.getDate())+"T"+p(t.getHours())+":"+p(t.getMinutes())} else delete st.txt[k];
+    render(); return}
+  const ao=e.target.closest("[data-allob]");
+  if(ao){const si=+ao.dataset.allob; st.ab=st.ab||{}; S[si].g.forEach((g,gi)=>{const k=si+"-"+gi; if(!sel(k).some(i=>!g.o[i][2])&&!st.ab[k])st.sel[k]=[0]}); document.getElementById("exampleNote").hidden=true; render(); return}
+  const cb2=e.target.closest("[data-cat]");
+  if(cb2){const [k,id]=cb2.dataset.cat.split("|"),[si,gi]=k.split("-").map(Number),g=S[si].g[gi]; st.cat=st.cat||{};
+    const on=!!st.cat[k+":"+id]||sel(k).some(i=>g.o[i][3]===id);
+    const cc=g.cats.find(c=>c.id===id);
+    st.cat[k+":"+id]=!on; if(on)st.sel[k]=sel(k).filter(i=>g.o[i][3]!==id); else st.sel[k]=sel(k).filter(i=>!g.o[i][2]&&i!==cc.ex);
+    document.getElementById("exampleNote").hidden=true;
+    const y=cb2.getBoundingClientRect().top; render();
+    const nb=root.querySelector(`[data-cat="${k}|${id}"]`); if(nb){window.scrollBy(0,nb.getBoundingClientRect().top-y);nb.focus({preventScroll:true})} return}
+  const abb=e.target.closest("[data-ab]");
+  if(abb){const k=abb.dataset.ab,[si,gi]=k.split("-").map(Number),g=S[si].g[gi]; st.ab=st.ab||{};
+    const on=!!st.ab[k]||sel(k).some(i=>!g.o[i][2]);
+    const anyCat=(g.cats||[]).some(c=>st.cat&&st.cat[k+":"+c.id]);
+    if(on||anyCat){st.ab[k]=false; st.sel[k]=[]; if(st.cat)(g.cats||[]).forEach(c=>delete st.cat[k+":"+c.id])} else {st.ab[k]=true; st.sel[k]=[]}
+    document.getElementById("exampleNote").hidden=true;
+    const y=abb.getBoundingClientRect().top; render();
+    const nb=root.querySelector(`[data-ab="${k}"]`); if(nb){window.scrollBy(0,nb.getBoundingClientRect().top-y);nb.focus({preventScroll:true})} return}
+  const mo=e.target.closest("[data-more]");
+  if(mo){const k=mo.dataset.more,[si,gi]=k.split("-").map(Number),g=S[si].g[gi];
+    moreOpen[k]=!moreOpen[k]; const y=mo.getBoundingClientRect().top; render();
+    const nb=root.querySelector(`[data-more="${k}"]`); if(nb){window.scrollBy(0,nb.getBoundingClientRect().top-y);nb.focus({preventScroll:true})} return}
   const b=e.target.closest(".chip"); if(!b)return;
   const k=b.dataset.k,i=+b.dataset.i,[si,gi]=k.split("-").map(Number),g=S[si].g[gi];
   let cur=sel(k);
@@ -395,6 +940,9 @@ root.addEventListener("click",e=>{
     cur=cur.includes(i)?cur.filter(x=>x!==i):[...cur,i].sort((a,b)=>a-b);
     // STU: "o. B." und Befunde schließen sich aus
     if(S[si].stu&&cur.includes(i)) cur=g.o[i][2]?[i]:cur.filter(x=>!g.o[x][2]);
+    if(S[si].stu&&g.o[i][2]){if(st.ab)st.ab[k]=false; if(st.cat)(g.cats||[]).forEach(c=>delete st.cat[k+":"+c.id])}
+    // exklusive Option (z. B. pDMS intakt) schließt die zugehörige Kategorie
+    (g.cats||[]).forEach(c=>{if(c.ex===i&&cur.includes(i)){st.cat=st.cat||{};delete st.cat[k+":"+c.id];cur=cur.filter(x=>g.o[x][3]!==c.id)}});
   } else cur=cur.includes(i)?[]:[i];
   st.sel[k]=cur;
   document.getElementById("exampleNote").hidden=true;
@@ -415,20 +963,22 @@ root.addEventListener("change",e=>{
 root.addEventListener("input",e=>{
   if(e.target.tagName==="SELECT")return;
   if(e.target.dataset.med){st.meds[+e.target.dataset.med][e.target.dataset.f]=e.target.value}
-  else if(e.target.dataset.t)st.txt[e.target.dataset.t]=e.target.value;
+  else if(e.target.dataset.t){st.txt[e.target.dataset.t]=e.target.value;
+    const t=e.target.dataset.t; if(t.endsWith(":own")){const k=t.slice(0,-4),[si,gi]=k.split("-").map(Number),d=document.getElementById("dd-"+k); if(d)d.querySelector("summary").innerHTML=ddSummary(S[si].g[gi],sel(k),k)}}
   else if(e.target.id==="extra")st.extra=e.target.value;
   update();
 });
 function lineOf(si,L){const l=S[si].list?listLines(si).find(x=>x.startsWith(((S[si].list.out||{})[L]||L)+": ")):null;return l?l.slice(l.indexOf(": ")+2):""}
+function ownDxName(){return st.dx==="__other"?(st.dxT||"").trim():BPR[st.dx]?BPR[st.dx].n:""}
 function handover(){
-  const SY=lineOf(5,"S"),EV=lineOf(5,"E"),AL=lineOf(5,"A"),ME=lineOf(5,"M"),PG=lineOf(5,"P");
+  const SY=symParts(9).join(", "),ON=[sinceText()&&"seit "+sinceText(),pick(9,2)].filter(Boolean).join(", "),EV=lineOf(5,"E"),AL=lineOf(5,"A"),ME=lineOf(5,"M"),PG=lineOf(5,"P");
   const auff=S[1].lead(1), prim=S[2].lead(2);
   const sec=visible(S[4].show)?listLines(4).join("\n"):"", stu=visible(S[3].show)?stuLines(3).join("\n"):"";
   const mass=listLines(6).filter(x=>!x.startsWith("Verlauf")).join("\n");
   const rows=[
    ["S","Start",1,"„Start“ durch aufnehmende Person. Ruhe, Face-to-Face, möglichst keine Tätigkeiten am Pat.",""],
    ["I","Identifikation",0,"Geschlecht, Nachname, Alter (nicht Geburtsdatum). Fehlendes benennen, z. B. „Alter unbekannt“.",""],
-   ["N","Notfallereignis",0,"Was? (Leitsymptom / Verdachtsdiagnose) · Wie? (Ursache) · Wann? · optional Wo / Auffindesituation",[SY&&"Was: "+SY,EV&&"Wann / Wie: "+EV,auff].filter(Boolean).join("\n")],
+   ["N","Notfallereignis",0,"Was? (Leitsymptom / Verdachtsdiagnose) · Wie? (Ursache) · Wann? · optional Wo / Auffindesituation",[ownDxName()&&"Verdacht: "+ownDxName(),SY&&"Was: "+SY,ON&&"Wann: "+ON,(EV||sturzText())&&"Wie: "+[EV,sturzText()].filter(Boolean).join(" "),auff].filter(Boolean).join("\n")],
    ["N","Notfallpriorität",0,"ABCDE-Probleme nennen, wenn Maßnahmen nötig waren oder sind, mit pathologischen Befunden und Vitalwerten. Sonst: „kein A- bis D-Problem, unauffällige Vitalparameter“. Begleitverletzungen unter E.",[prim,stu&&"STU:\n"+stu,sec].filter(Boolean).join("\n")],
    ["H","Handlung",0,"Direkt an die jeweilige Priorität koppeln: Maßnahme, Dosis / Umfang, Zeitpunkt, Wirkung. Bewusst unterlassene Maßnahmen nennen.",mass],
    ["A","Anamnese",0,"Allergien, Medikation, Vorerkrankungen, Infektion, Soziales / Organisatorisches, Besonderheiten (z. B. Patientenverfügung, DNR/DNI). Leere Anamnese trotzdem erwähnen.",[AL&&"Allergien: "+AL,ME&&"Medikation: "+ME,PG&&"Vorerkrankungen: "+PG].filter(Boolean).join("\n")],
@@ -459,15 +1009,98 @@ function refusalText(){
 }
 const OV={
   handover:["Übergabe nach SINNHAFT","Spickzettel für die Übergabe. Erscheint nicht im Freitext. Grau hinterlegt: was du in diesem Einsatz schon angeklickt hast.",handover],
+  questions:["Gezielt nachfragen","Fragen passend zu den führenden Verdachtsdiagnosen. Antworten verschieben die Liste, erscheinen aber nicht im Freitext.",()=>qView(true)],
   refusal:["Aufklärung bei Transportverweigerung","Checkliste für die Aufklärung vor der Unterschrift auf dem Tablet. Erscheint nicht im Freitext.",refusalText]};
-function openOv(kind="handover"){const [t,sub,fill]=OV[kind];document.getElementById("ovTitle").textContent=t;document.getElementById("ovSub").textContent=sub;fill();lastFocus=document.activeElement;const o=document.getElementById("ov");o.hidden=false;document.getElementById("ovClose").focus()}
+function showOv(t,sub,fill,wide){document.querySelector(".ovcard").classList.toggle("wide",!!wide);document.getElementById("ovTitle").textContent=t;document.getElementById("ovSub").textContent=sub;fill();lastFocus=document.activeElement;document.getElementById("ov").hidden=false;document.querySelector(".ovcard").scrollTop=0;document.getElementById("ovClose").focus()}
+function openOv(kind="handover"){const [t,sub,fill]=OV[kind];document.querySelector(".ovcard").classList.remove("wide");document.getElementById("ovTitle").textContent=t;document.getElementById("ovSub").textContent=sub;fill();lastFocus=document.activeElement;const o=document.getElementById("ov");o.hidden=false;document.getElementById("ovClose").focus()}
 function closeOv(){document.getElementById("ov").hidden=true;lastFocus?.focus()}
 document.getElementById("ovClose").onclick=closeOv;
+document.getElementById("openQs").onclick=()=>openOv("questions");
 document.getElementById("ov").addEventListener("click",e=>{if(e.target.id==="ov")closeOv()});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.getElementById("ov").hidden)closeOv()});
 root.addEventListener("click",e=>{if(e.target.closest("#openHandover"))openOv("handover");const a=e.target.closest(".actbtn");if(a)openOv(a.dataset.act)});
+
+// ---------- Medikamente aus dem Begleitheft ----------
+function openMeds(key,title){
+  let m,cave,nb;
+  if(key.startsWith("d:")){const inf=infoFor(key.slice(2));m=inf.m;cave=inf.cave;nb=inf.b&&inf.b.nb}
+  else {const b=BPR[key.slice(2)];m=b.m;cave=b.cave||[];nb=b.nb}
+  showOv("Medikamente: "+title,"Laut Begleitheft Medikamente 2026. Dosierungen für Erwachsene, gekürzt. Kontraindikationen, Altersgrenzen und Kinderdosen immer im Begleitheft prüfen.",()=>{
+    const body=document.getElementById("ovBody");
+    let h="";
+    if(cave.length)h+=`<div class="cave"><b>Achtung laut Begleitheft</b><ul>${cave.map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>`;
+    if(!m.length)h+=`<p class="ddxempty">Für dieses Krankheitsbild führt das Begleitheft keine spezifischen Medikamente. Vorgehen laut Behandlungspfad im Kompendium.</p>`;
+    h+=m.map(n=>{const x=BH[n];return `<div class="medcard"><div class="medhead"><h3>${esc(n)}</h3><button type="button" class="mini" data-pdf="begl" data-page="${x[0]}" data-title="${esc(n)}">Begleitheft S. ${x[0]}</button></div><p><span class="k2">Indikation</span>${esc(x[1])}</p><p><span class="k2">Dosierung</span>${esc(x[2])}</p></div>`}).join("");
+    if(nb)h+=`<div class="medcard"><div class="medhead"><h3>${nb===68?"NIV / CPAP":"Reversible Ursachen / ROSC"}</h3><button type="button" class="mini" data-pdf="begl" data-page="${nb}" data-title="Begleitheft">Begleitheft S. ${nb}</button></div></div>`;
+    body.innerHTML=h;
+  });
+}
+// ---------- PDF-Ansicht (Kompendium / Begleitheft) ----------
+// Die PDFs werden einmal vom Gerät ausgewählt und nur lokal im Browser gespeichert.
+const PDFS={komp:{n:"Gemeinsame Kompendium Rettungsdienst 2026",f:"GemKompRD2026.pdf",pages:[150,220]},begl:{n:"Begleitheft Medikamente 2026",f:"Begleitheft-Medikamente 2026.pdf",pages:[30,90]}};
+const pdfMem={}, pdfDoc={};
+let view=null;
+function idb(){return new Promise((res,rej)=>{try{const r=indexedDB.open("rd-doku",1);r.onupgradeneeded=()=>r.result.createObjectStore("pdf");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}})}
+async function idbGet(k){try{const db=await idb();return await new Promise((res,rej)=>{const q=db.transaction("pdf").objectStore("pdf").get(k);q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error)})}catch(e){return null}}
+async function idbPut(k,v){try{const db=await idb();await new Promise((res,rej)=>{const tx=db.transaction("pdf","readwrite");tx.objectStore("pdf").put(v,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}catch(e){}}
+// PDFs, die neben der App liegen (z. B. im GitHub-Ordner), werden automatisch geladen
+const PDF_FILES={komp:["kompendium.pdf","GemKompRD2026.pdf","Kompendium.pdf"],begl:["begleitheft.pdf","Begleitheft-Medikamente 2026.pdf","Begleitheft-Medikamente-2026.pdf","Begleitheft.pdf"]};
+async function fetchLocal(w){
+  for(const f of PDF_FILES[w]){
+    try{const r=await fetch(f); if(!r.ok)continue; const b=await r.arrayBuffer();
+      if(new TextDecoder().decode(new Uint8Array(b.slice(0,5)))!=="%PDF-")continue;
+      pdfMem[w]=b; return b}catch(e){}
+  }
+  return null;
+}
+async function loadDoc(w){
+  if(pdfDoc[w])return pdfDoc[w];
+  const buf=pdfMem[w]||await fetchLocal(w)||await idbGet(w); if(!buf)return null;
+  if(!window.pdfjsLib)throw new Error("lib");
+  pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  pdfDoc[w]=await pdfjsLib.getDocument({data:new Uint8Array(buf.slice(0))}).promise;
+  return pdfDoc[w];
+}
+// Druckseite -> PDF-Seite. Begleitheft als Doppelseiten-PDF: zwei Heftseiten pro PDF-Seite.
+function pdfPage(w,p,doc){if(w==="begl"&&doc.numPages<60)return Math.floor(p/2)+1;return Math.min(p,doc.numPages)}
+function openPdf(w,p,title){
+  view={w,p,title,page:null,zoom:1};
+  showOv(title,(w==="komp"?"Kompendium":"Begleitheft")+" · gedruckte Seite "+p,()=>{document.getElementById("ovBody").innerHTML=`<div id="pdfv"><p class="ddxempty">Lade …</p></div>`},true);
+  drawPdf();
+}
+async function drawPdf(){
+  const box=document.getElementById("pdfv"); if(!box||!view)return;
+  const w=view.w, P=PDFS[w];
+  let doc;
+  try{doc=await loadDoc(w)}catch(e){box.innerHTML=`<p class="ddxempty">Die PDF-Anzeige konnte nicht geladen werden. Beim ersten Öffnen wird eine Internetverbindung gebraucht.</p>`;return}
+  if(!doc){box.innerHTML=`<div class="pick"><p>Um Seiten aus dem <b>${esc(P.n.replace("Gemeinsame ","Gemeinsamen "))}</b> anzuzeigen, wähle die PDF einmal von deinem Gerät aus (Datei <b>${esc(P.f)}</b>). Sie wird nur lokal auf diesem Gerät gespeichert und nicht hochgeladen.</p><label class="btn primary pickbtn">PDF auswählen<input type="file" accept="application/pdf" id="pdfPick" hidden></label><p class="ddxempty">Gesuchte Stelle: gedruckte Seite ${view.p}</p></div>`;return}
+  if(view.page==null)view.page=pdfPage(w,view.p,doc);
+  const warn=(doc.numPages<P.pages[0]||doc.numPages>P.pages[1])?`<p class="cave">Diese Datei hat ${doc.numPages} Seiten. Ist das wirklich das ${esc(P.n)}? Sonst über „Andere Datei“ neu auswählen.</p>`:"";
+  box.innerHTML=`${warn}<div class="pdfbar"><button type="button" class="btn" data-nav="-1" aria-label="Vorherige Seite">‹</button><span class="pgno">PDF-Seite ${view.page} / ${doc.numPages}</span><button type="button" class="btn" data-nav="1" aria-label="Nächste Seite">›</button><button type="button" class="btn" data-zoom="-1" aria-label="Verkleinern">−</button><button type="button" class="btn" data-zoom="1" aria-label="Vergrößern">+</button><label class="btn">Andere Datei<input type="file" accept="application/pdf" id="pdfPick" hidden></label></div><div class="pdfcanvas"><canvas id="pdfc"></canvas></div>`;
+  const page=await doc.getPage(view.page), base=page.getViewport({scale:1});
+  const cw=box.querySelector(".pdfcanvas").clientWidth||600, sc=cw/base.width*view.zoom, dpr=Math.min(window.devicePixelRatio||1,3);
+  const vp=page.getViewport({scale:sc*dpr}), c=document.getElementById("pdfc");
+  c.width=vp.width;c.height=vp.height;c.style.width=(vp.width/dpr)+"px";c.style.height=(vp.height/dpr)+"px";
+  await page.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;
+}
+document.addEventListener("click",e=>{
+  const p=e.target.closest("[data-pdf]"); if(p){openPdf(p.dataset.pdf,+p.dataset.page,p.dataset.title);return}
+  const m=e.target.closest("[data-meds]"); if(m){openMeds(m.dataset.meds,m.dataset.title);return}
+  const n=e.target.closest("[data-nav]"); if(n&&view&&pdfDoc[view.w]){view.page=Math.max(1,Math.min(pdfDoc[view.w].numPages,view.page+ +n.dataset.nav));drawPdf();return}
+  const z=e.target.closest("[data-zoom]"); if(z&&view){view.zoom=Math.max(.6,Math.min(3,view.zoom+(+z.dataset.zoom)*.4));drawPdf()}
+});
+document.addEventListener("change",async e=>{
+  if(e.target.id==="ownDx"){st.dx=e.target.value;if(st.dx!=="__other")st.dxT="";save();renderOwnDx();if(st.dx==="__other")document.getElementById("ownDxText").focus();return}
+  if(e.target.id!=="pdfPick"||!view)return;
+  const f=e.target.files&&e.target.files[0]; if(!f)return;
+  const buf=await f.arrayBuffer(); pdfMem[view.w]=buf; delete pdfDoc[view.w]; view.page=null;
+  await idbPut(view.w,buf); drawPdf();
+});
+document.addEventListener("input",e=>{if(e.target.id==="ownDxText"){st.dxT=e.target.value;save()}});
+
+document.getElementById("docyou").addEventListener("change",e=>{st.docyou=e.target.checked;render()});
 document.getElementById("paras").addEventListener("change",e=>{st.paras=e.target.checked;update()});
-function reset(){st={sel:{},txt:{},meds:[],extra:"",paras:st.paras};document.getElementById("exampleNote").hidden=true;render();window.scrollTo({top:0})}
+function reset(){st={sel:{},txt:{},meds:[],q:{},dx:"",dxT:"",ab:{},cat:{},extra:"",paras:st.paras,docyou:st.docyou};document.getElementById("exampleNote").hidden=true;render();window.scrollTo({top:0})}
 document.getElementById("reset").onclick=reset;
 document.getElementById("reset2").onclick=reset;
 async function copy(){
@@ -482,7 +1115,10 @@ document.getElementById("copy2").onclick=async()=>{await copy();document.getElem
 document.getElementById("jump").onclick=()=>document.getElementById("out").scrollIntoView({behavior:"smooth",block:"center"});
 
 const saved=load();
-if(saved&&saved.sel){st=Object.assign({sel:{},txt:{},meds:[],extra:"",paras:true},saved)}else{st=JSON.parse(JSON.stringify(EXAMPLE));document.getElementById("exampleNote").hidden=false}
+if(saved&&saved.sel){st=Object.assign({sel:{},txt:{},meds:[],q:{},dx:"",dxT:"",ab:{},cat:{},extra:"",paras:true},saved);
+  // ältere Stände: Symptome aus SAMPLER übernehmen
+  if(st.sel["5-0"]&&!st.sel["9-1"]){st.sel["9-1"]=st.sel["5-0"];delete st.sel["5-0"]}
+  if(st.sel["5-5"]&&!st.sel["9-2"]){const o=st.sel["5-5"][0];if(o===0)st.sel["9-2"]=[0];if(o===3)st.sel["9-2"]=[1];if(o===1)st.sel["9-3"]=[1];if(o===2)st.sel["9-3"]=[2];delete st.sel["5-5"]}}else{st=JSON.parse(JSON.stringify(EXAMPLE));document.getElementById("exampleNote").hidden=false}
 render();
 
 // Offline-Speicher registrieren
